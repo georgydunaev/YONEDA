@@ -1,0 +1,64 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+% \theoremstyle{lemma}
+\newtheorem{lemma}{Lemma}[section]
+
+% \theoremstyle{theorem}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Hom}{{\mbox{Hom}}}
+\newcommand{\mor}{{\mbox{mor}}}
+\newcommand{\Set}{{\mbox{Set}}}
+\newcommand{\ra}{{\rightarrow}}
+
+\begin{document}
+
+Yoneda embedding theorem.\\
+Let C be a locally small category.\\
+Let Set be a category of sets.\\
+$[C^{op},\mbox{Set}]$ is some functor category.\\
+
+\begin{definition}
+Let $C$, $D$ be the categories.\\
+ $(F, F_mor)$ is a functor iff\\
+$$F:C \ra D$$
+$$F_\mor:\Pi(A\ B:C).\Hom_C(A,B) \ra \Hom_D(F(A), F(B))$$
+\end{definition}
+
+\begin{lemma}
+$$\Hom_C(-, x) \in [C^{op},\Set]$$
+\end{lemma}
+Proof.\\
+%\begin{itemize}
+%\end{itemize}
+\begin{enumerate}
+\item $\Hom(-, x) : C^{op} \ra \Set$\ \ \ by definition of $\Hom$.
+\item $\Hom_\mor(-, x) :\Pi(A\ B:C).\Hom_{C^{op}}(A,B) \ra \Hom_\Set(\Hom_C(A,x), \Hom_C(B,x))$\\
+$\Hom_\mor^{A,B}(f\in\Hom_{C^{op}}(A,B), x) = (g \in\Hom(A,x) \mapsto (f \circ_C g) \in\Hom(B,x))$\ (this is definition)\\
+$\Hom_\mor$ is total since $f:\Hom_{C^{op}}(A,B), \Rightarrow f\in\Hom_C(B,A).$
+\item $\Hom_\mor^{A,A}(1_A\in\Hom_{C^{op}}(A,A), x) = \left(g \in\Hom_C(A,x)\mapsto 1_A \circ_C g\right) = $\\
+$= \left(g \in\Hom_C(A,x) \mapsto g \in\Hom_C(A,x)\right) =$\\
+$= 1_{\Hom_C(A,x)} \in \Hom_\Set\left(\Hom_C(A,x), \Hom_C(A,x)\right).$\\
+since $1_A \circ_C g = g$\\
+\end{enumerate}
+
+
+
+\begin{definition}
+Yoneda functor between categories $C$ and $[C^{op},\Set]$.
+$$h_x = \Hom(-, x)$$
+\end{definition}
+\begin{theorem}
+$h_{-}:C\rightarrow [C^{op},\Set]$ is a fully faithful category.
+\end{theorem}
+
+
+\end{document}

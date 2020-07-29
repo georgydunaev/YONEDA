@@ -4,7 +4,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{amsthm}
-
+% \usepackage[lite]{mtpro2}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 
@@ -14,6 +14,7 @@
 % \theoremstyle{theorem}
 \newtheorem{theorem}{Theorem}[section]
 
+\newcommand{\Ob}{{\mbox{Ob}}}
 \newcommand{\Hom}{{\mbox{Hom}}}
 \newcommand{\mor}{{\mbox{mor}}}
 \newcommand{\Set}{{\mbox{Set}}}
@@ -28,30 +29,48 @@ $[C^{op},\mbox{Set}]$ is some functor category.\\
 
 \begin{definition}
 Let $C$, $D$ be the categories.\\
- $(F, F_mor)$ is a functor iff\\
-$$F:C \ra D$$
-$$F_\mor:\Pi(A\ B:C).\Hom_C(A,B) \ra \Hom_D(F(A), F(B))$$
+ $(F, \widetilde{F})$ is a (covariant) functor iff\\
+\begin{enumerate}
+\item $F:C \ra D$
+\item $\widetilde{F}:\Pi(A\ B:C).\Hom_C(A,B) \ra \Hom_D(F(A), F(B))$
+\item $\forall A\in \Ob_C, \widetilde{F}^{A,A}(1_A)=1_{F(A)}$
+\item $\forall A\ B\ C \in \Ob_C.\forall f\in\Hom_C(B,C).\forall g\in\Hom_C(A,B). \widetilde{F}^{A,C}(f\circ_C^{A\ B\ C} g)=\widetilde{F}(f)\circ_D^{F(A)\ F(B)\ F(C)} \widetilde{F}(g)$
+\end{enumerate}
+
+\end{definition}
+
+\begin{definition}
+Let $C$, $D$ be the categories.\\
+$[C,D]$ is the set of functors from $C$ to $D$.\\
+\end{definition}
+
+\begin{definition} The morphism function of Hom-functor.
+$$\widetilde{\Hom_C}^{A,B}(f\in\Hom_{C^{op}}(A,B), x) = (g \in\Hom_C(A,x) \mapsto (f \circ_C g) \in\Hom_C(B,x))$$
 \end{definition}
 
 \begin{lemma}
 $$\Hom_C(-, x) \in [C^{op},\Set]$$
 \end{lemma}
-Proof.\\
+
+\noindent Proof.
 %\begin{itemize}
 %\end{itemize}
 \begin{enumerate}
 \item $\Hom(-, x) : C^{op} \ra \Set$\ \ \ by definition of $\Hom$.
-\item $\Hom_\mor(-, x) :\Pi(A\ B:C).\Hom_{C^{op}}(A,B) \ra \Hom_\Set(\Hom_C(A,x), \Hom_C(B,x))$\\
-$\Hom_\mor^{A,B}(f\in\Hom_{C^{op}}(A,B), x) = (g \in\Hom(A,x) \mapsto (f \circ_C g) \in\Hom(B,x))$\ (this is definition)\\
-$\Hom_\mor$ is total since $f:\Hom_{C^{op}}(A,B), \Rightarrow f\in\Hom_C(B,A).$
-\item $\Hom_\mor^{A,A}(1_A\in\Hom_{C^{op}}(A,A), x) = \left(g \in\Hom_C(A,x)\mapsto 1_A \circ_C g\right) = $\\
+\item $\widetilde{\Hom}(-, x) :\Pi(A\ B:C).\Hom_{C^{op}}(A,B) \ra \Hom_\Set(\Hom_C(A,x), \Hom_C(B,x))$\\
+$\widetilde{\Hom_C}^{A,B}(f\in\Hom_{C^{op}}(A,B), x) = (g \in\Hom_C(A,x) \mapsto (f \circ_C g) \in\Hom_C(B,x))$\ (this is definition)\\
+$\Hom_\mor$ is total since $f:\Hom_{C^{op}}(A,B), \Rightarrow f\in\Hom_C(B,A)$ by definition of dual category. (It follows that composition is defined, so it is total.)
+\item $\widetilde{\Hom}^{A,A}(1_A\in\Hom_{C^{op}}(A,A), x) = \left(g \in\Hom_C(A,x)\mapsto 1_A \circ_C g\right) = $\\
 $= \left(g \in\Hom_C(A,x) \mapsto g \in\Hom_C(A,x)\right) =$\\
 $= 1_{\Hom_C(A,x)} \in \Hom_\Set\left(\Hom_C(A,x), \Hom_C(A,x)\right).$\\
 since $1_A \circ_C g = g$\\
+\item Let $f\in\Hom_C(B,C)$ and $g\in\Hom_C(A,B)$.\\
+$\widetilde{\Hom_C}(f\circ g, x) = \widetilde{\Hom_C}(g, x) \circ \widetilde{\Hom_C}(f, x)$\\
+$a)\ \widetilde{\Hom_C}(f\circ g, x) = (h \in\Hom_C(A,x) \mapsto ((f\circ_C g) \circ_C h))$\\
+$b)\ \widetilde{\Hom_C}(f, x) = (u \in\Hom_C(B,x) \mapsto (f \circ_C u)\in\Hom_C(C,x))$\\
+$c)\ \widetilde{\Hom_C}(g, x) = (v \in\Hom_C(A,x) \mapsto (g \circ_C v))$\\
 \end{enumerate}
-
-
-
+Qed.
 \begin{definition}
 Yoneda functor between categories $C$ and $[C^{op},\Set]$.
 $$h_x = \Hom(-, x)$$

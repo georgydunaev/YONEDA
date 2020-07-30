@@ -15,7 +15,9 @@
 \newtheorem{theorem}{Theorem}[section]
 
 \newcommand{\Ob}{{\mbox{Ob}}}
+\newcommand{\Mor}{{\mbox{Mor}}}
 \newcommand{\Hom}{{\mbox{Hom}}}
+\newcommand{\HomMor}{{\widetilde{\Hom}\mbox{}}}
 \newcommand{\op}{{\mbox{op}}}
 \newcommand{\mor}{{\mbox{mor}}}
 \newcommand{\defi}{{\mbox{def}}}
@@ -24,8 +26,12 @@
 \newcommand{\ra}{{\rightarrow}}
 
 \begin{document}
+Notes and notation:\\
+$\Ob_C$ and $C$ are used interchangeable. (e.g. $\Ob_\Set$ and $\Set$.)\\
+Duality: $\Ob_C = \Ob_{C^\op}$ and 
+ $\forall x,y \in \Ob_C. \Hom_C(x,y) = \Hom_{C^\op}(y,x)$.
 
-Yoneda embedding theorem.\\
+\section{Yoneda embedding theorem}
 Let C be a locally small category.\\
 Let Set be a category of sets.\\
 $[C^{op},\mbox{Set}]$ is some functor category.\\
@@ -49,8 +55,10 @@ $[C,D]$ is the set of functors from $C$ to $D$.\\
 
 \begin{definition} The morphism function of the Hom-functor.\\
 Let $f\in\Hom_{C}(A,B)$.
-$$\widetilde{\Hom}_C(f,x) \eqdef (g \in\Hom_C(B,x) \mapsto (f \circ_C g) \in\Hom_C(A,x))$$
-$$\left(\mbox{the full form is }\widetilde{\Hom_C(-,x)}^{A,B}(f) \eqdef (g \in\Hom_C(B,x) \mapsto (f \circ_C g) \in\Hom_C(A,x)\right)$$
+$$\Hom_C: \Ob_C \times \Ob_C \to \Set$$
+$$\Hom_C(-,x): \Ob_C \to \Set$$
+$$\widetilde{\Hom}\mbox{}^{A,B}_C(f,x) \eqdef (g \in\Hom_C(B,x) \mapsto (f \circ_C g) \in\Hom_C(A,x))$$
+$$\left(\mbox{another form is }\widetilde{\Hom_C(-,x)}^{A,B}(f) \eqdef (g \in\Hom_C(B,x) \mapsto (f \circ_C g) \in\Hom_C(A,x)\right)$$
 \end{definition}
 
 \begin{lemma}
@@ -62,22 +70,23 @@ $$\Hom_C(-, x) \in [C^\op,\Set]$$
 %\end{itemize}
 \begin{enumerate}
 \item $\Hom(-, x) : C^\op \ra \Set$\ \ \ by definition of $\Hom$.
-\item $\widetilde{\Hom}(-, x) :\Pi(A\ B:C).\Hom_{C^\op}(A,B) \ra \Hom_\Set(\Hom_C(A,x), \Hom_C(B,x))$\\
-$\widetilde{\Hom_C}^{A,B}(f\in\Hom_{C^\op}(A,B), x) = (g \in\Hom_C(A,x) \mapsto (f \circ_C g) \in\Hom_C(B,x))$\ (this is a definition).\\
+\item $\HomMor(-, x) :\Pi(A\ B:C).\Hom_{C^\op}(A,B) \ra \Hom_\Set(\Hom_C(A,x), \Hom_C(B,x))$\\
+$\HomMor_C^{A,B}(f\in\Hom_{C^\op}(A,B), x) = (g \in\Hom_C(A,x) \mapsto (f \circ_C g) \in\Hom_C(B,x))$\ (this is a definition).\\
 In other words, fix the $A,B\in C$ and $f\in\Hom_{C^\op}(A,B)$.\\
-$\widetilde{\Hom_C}^{A,B}(f, x) = (g\mapsto (f \circ_C g))$\\
-$\widetilde{\Hom_C}^{A,B}(f, x) : \Hom_C(A,x) \to \Hom_C(B,x))$
+$\HomMor_C^{A,B}(f, x) = (g\mapsto (f \circ_C g))$\\
+$\HomMor_C^{A,B}(f, x) : \Hom_C(A,x) \to \Hom_C(B,x))$
 \\
-$\widetilde{\Hom}$ is total since $f:\Hom_{C^\op}(A,B), \Rightarrow f\in\Hom_C(B,A)$ by definition of dual category. (It follows that composition is defined, so it is total.)
-\item $\widetilde{\Hom}^{A,A}(1_A\in\Hom_{C^\op}(A,A), x) = \left(g \in\Hom_C(A,x)\mapsto 1_A \circ_C g\right) = $\\
-$= \left(g \in\Hom_C(A,x) \mapsto g \in\Hom_C(A,x)\right) =$\\
-$= 1_{\Hom_C(A,x)} \in \Hom_\Set\left(\Hom_C(A,x), \Hom_C(A,x)\right).$\\
+$\HomMor$ is total since $f:\Hom_{C^\op}(A,B), \Rightarrow f\in\Hom_C(B,A)$ by definition of dual category. (It follows that composition is defined, so it is total.)
+\item $1_A\in\Hom_{C^\op}(A,A)$\\
+$\HomMor^{A,A}(1_A, x) = \left(g \in\Hom_C(A,x)\mapsto 1_A \circ_C g\right) = $\\
+$\quad = \left(g \in\Hom_C(A,x) \mapsto g \in\Hom_C(A,x)\right) =$\\
+$\quad \quad = 1_{\Hom_C(A,x)} \in \Hom_\Set\left(\Hom_C(A,x), \Hom_C(A,x)\right).$\\
 since $1_A \circ_C g = g$\\
 \item Let $f\in\Hom_C(Y,Z)$ and $g\in\Hom_C(X,Y)$.\\
-Let's prove that $\widetilde{\Hom_C}(f\circ_C g, x) = \widetilde{\Hom_C}(g, x) \circ_\Set \widetilde{\Hom_C}(f, x)$\\
-$a)\ \widetilde{\Hom_C}(f\circ g, x) = (h \in\Hom_C(Z,x) \mapsto ((f\circ_C g) \circ_C h)\in\Hom_C(X,x))$\\
-$b)\ \widetilde{\Hom_C}(f, x) = \left(u \in\Hom_C(Z,x) \mapsto (f \circ_C u)\in\Hom_C(Y,x)\right)$\\
-$c)\ \widetilde{\Hom_C}(g, x) = \left(v \in\Hom_C(Y,x) \mapsto (g \circ_C v)\in\Hom_C\left(X,x\right)\right)$\\
+Let's prove that $\widetilde{\Hom}\mbox{}_C(f\circ_C g, x) = \HomMor_C(g, x) \circ_\Set \widetilde{\Hom_C}(f, x)$\\
+$a)\ \HomMor_C(f\circ g, x) = (h \in\Hom_C(Z,x) \mapsto ((f\circ_C g) \circ_C h)\in\Hom_C(X,x))$\\
+$b)\ \HomMor_C(f, x) = \left(u \in\Hom_C(Z,x) \mapsto (f \circ_C u)\in\Hom_C(Y,x)\right)$\\
+$c)\ \HomMor_C(g, x) = \left(v \in\Hom_C(Y,x) \mapsto (g \circ_C v)\in\Hom_C\left(X,x\right)\right)$\\
 \end{enumerate}
 Qed.
 \begin{definition}

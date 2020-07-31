@@ -19,6 +19,7 @@
 \newcommand{\Mor}{{\mbox{Mor}}}
 \newcommand{\Hom}{{\mbox{Hom}}}
 \newcommand{\HomMor}{{\widetilde{\Hom}\mbox{}}}
+\newcommand{\FMor}{{\widetilde{F}\mbox{}}}
 \newcommand{\op}{{\mbox{op}}}
 \newcommand{\mor}{{\mbox{mor}}}
 \newcommand{\defi}{{\mbox{def}}}
@@ -39,12 +40,12 @@ $[C^{op},\mbox{Set}]$ is some functor category.\\
 
 \begin{definition}
 Let $C$, $D$ be the categories.\\
- $(F, \widetilde{F})$ is a (covariant) functor iff\\
+ $(F, \FMor)$ is a (covariant) functor iff\\
 \begin{enumerate}
 \item $F:C \ra D$
-\item $\widetilde{F}:\Pi(A\ B:C).\Hom_C(A,B) \ra \Hom_D(F(A), F(B))$
-\item $\forall A\in \Ob_C, \widetilde{F}^{A,A}(1_A)=1_{F(A)}$
-\item $\forall X,Y,Z \in \Ob_C.\forall f\in\Hom_C(Y,Z).\forall g\in\Hom_C(X,Y). \widetilde{F}^{X,Z}(f\circ_C^{X,Y,Z} g)=\widetilde{F}(f)\circ_D^{F(X),F(Y),F(Z)} \widetilde{F}(g)$
+\item $\FMor:\Pi(A\ B:C).\Hom_C(A,B) \ra \Hom_D(F(A), F(B))$
+\item $\forall A\in \Ob_C, \FMor^{A,A}(1_A)=1_{F(A)}$
+\item $\forall X,Y,Z \in \Ob_C.\forall f\in\Hom_C(Y,Z).\forall g\in\Hom_C(X,Y). \FMor^{X,Z}(f\circ_C^{X,Y,Z} g)=\FMor^{Y,Z}(f)\circ_D^{F(X),F(Y),F(Z)} \FMor^{X,Y}(g)$
 \end{enumerate}
 
 \end{definition}
@@ -75,7 +76,7 @@ Substitution:\\
 $C \coloneqq C^\op$, 
 $D \coloneqq \Set$, 
 $F \coloneqq \Hom_C(-,x)$, 
-$\widetilde{F} \coloneqq \HomMor_C(-,x)$\\
+$\FMor \coloneqq \HomMor_C(-,x)$\\
 \begin{enumerate}
 \item $\Hom(-, x) : C^\op \ra \Set$\ \ \ by definition of $\Hom$.
 \item $\HomMor(-, x) :\Pi(A\ B:C).\Hom_{C^\op}(A,B) \ra \Hom_\Set(\Hom_C(A,x), \Hom_C(B,x))$\\
@@ -90,9 +91,20 @@ $\HomMor^{A,A}(1_A, x) = \left(g \in\Hom_C(A,x)\mapsto 1_A \circ_C g\right) = $\
 $\quad = \left(g \in\Hom_C(A,x) \mapsto g \in\Hom_C(A,x)\right) =$\\
 $\quad \quad = 1_{\Hom_C(A,x)} \in \Hom_\Set\left(\Hom_C(A,x), \Hom_C(A,x)\right).$\\
 since $1_A \circ_C g = g$\\
-\item Let $f\in\Hom_C(Y,Z)$ and $g\in\Hom_C(X,Y)$.\\
-Let's prove that $\HomMor_C(f\circ_C g, x) = \HomMor_C(g, x) \circ_\Set \HomMor_C(f, x)$\\
-$a)\ \HomMor_C(f\circ g, x) = (h \in\Hom_C(Z,x) \mapsto ((f\circ_C g) \circ_C h)\in\Hom_C(X,x))$\\
+\item Now we need do a substitution in
+$\forall X,Y,Z \in \Ob_C.\forall f\in\Hom_C(Y,Z).\forall g\in\Hom_C(X,Y). \FMor^{X,Z}(f\circ_C^{X,Y,Z} g)=\FMor(f)\circ_D^{F(X),F(Y),F(Z)} \FMor(g)$ and prove it.\\
+Again, $C \coloneqq C^\op$, 
+$D \coloneqq \Set$, 
+$F \coloneqq \Hom_C(-,x)$, 
+$\FMor \coloneqq \HomMor_C(-,x)$\\
+So $\FMor^{X,Z}(f\circ_C^{X,Y,Z} g)=\FMor(f)\circ_D^{F(X),F(Y),F(Z)} \FMor(g)$ becames\\
+$\HomMor_C^{X,Z}(f\circ_C^{X,Y,Z} g, x)=\HomMor_C(f,x)\circ_D^{F(X),F(Y),F(Z)} \HomMor_C(g,x)$.\\
+$\HomMor_C^{X,Z}(f\circ_{C^\op}^{X,Y,Z} g, x)=\HomMor_C(f,x)\circ_\Set^{\HomMor_C(X,x),\HomMor_C(Y,x),\HomMor_C(Z,x)} \HomMor_C(g,x)$. We'll omit some notation.\\
+$\HomMor_C^{X,Z}(f\circ_{C^\op}^{X,Y,Z} g, x)=\HomMor_C(f,x)\circ_\Set \HomMor_C(g,x)$,\\
+where $f\in\Hom_{C^\op}(Y,Z)$ and $g\in\Hom_{C^\op}(X,Y)$.\\
+$f\circ_{C^\op}^{X,Y,Z} g = g\circ_{C}^{X,Y,Z} f$\\
+So it's enough to prove that $\HomMor_C(g\circ_C f, x) = \HomMor_C(f, x) \circ_\Set \HomMor_C(g, x)$\\
+$a)\ \HomMor_C(g\circ f, x) = (h \in\Hom_C(Z,x) \mapsto ((g\circ_C f) \circ_C h)\in\Hom_C(X,x))$\\
 $b)\ \HomMor_C(f, x) = \left(u \in\Hom_C(Z,x) \mapsto (f \circ_C u)\in\Hom_C(Y,x)\right)$\\
 $c)\ \HomMor_C(g, x) = \left(v \in\Hom_C(Y,x) \mapsto (g \circ_C v)\in\Hom_C\left(X,x\right)\right)$\\
 \end{enumerate}

@@ -26,7 +26,6 @@
 \newcommand{\defi}{{\mbox{def}}}
 \newcommand{\eqdef}{{\stackrel{\defi}{=}}}
 \newcommand{\Set}{{\mbox{Set}}}
-\newcommand{\ra}{{\rightarrow}}
 
 \begin{document}
 Notes and notation:\\
@@ -44,8 +43,8 @@ $[C^{op},\mbox{Set}]$ is some functor category.\\
 Let $C$, $D$ be the categories.\\
  $(F, \FMor)$ is a (covariant) functor iff\\
 \begin{enumerate}
-\item $F:C \ra D$
-\item $\FMor:\Pi(A\ B:C).\Hom_C(A,B) \ra \Hom_D(F(A), F(B))$
+\item $F:C \to D$
+\item $\FMor:\Pi(A\ B:C).\Hom_C(A,B) \to \Hom_D(F(A), F(B))$
 \item $\forall A\in \Ob_C, \FMor^{A,A}(1_A)=1_{F(A)}$
 \item $\forall X,Y,Z \in \Ob_C.\forall f\in\Hom_C(Y,Z).\forall g\in\Hom_C(X,Y). \FMor^{X,Z}(f\circ_C^{X,Y,Z} g)=\FMor^{Y,Z}(f)\circ_D^{F(X),F(Y),F(Z)} \FMor^{X,Y}(g)$
 \end{enumerate}
@@ -80,8 +79,8 @@ $D \coloneqq \Set$,
 $F \coloneqq \Hom_C(-,x)$, 
 $\FMor \coloneqq \HomMor_C(-,x)$\\
 \begin{enumerate}
-\item $\Hom(-, x) : C^\op \ra \Set$\ \ \ by definition of $\Hom$.
-\item $\HomMor(-, x) :\Pi(A\ B:C).\Hom_{C^\op}(A,B) \ra \Hom_\Set(\Hom_C(A,x), \Hom_C(B,x))$\\
+\item $\Hom(-, x) : C^\op \to \Set$\ \ \ by definition of $\Hom$.
+\item $\HomMor(-, x) :\Pi(A\ B:C).\Hom_{C^\op}(A,B) \to \Hom_\Set(\Hom_C(A,x), \Hom_C(B,x))$\\
 $\HomMor_C^{A,B}(f\in\Hom_{C^\op}(A,B), x) = (g \in\Hom_C(A,x) \mapsto (g \circ_C f) \in\Hom_C(B,x))$\ (this is a definition).\\
 In other words, fix the $A,B\in C$ and $f\in\Hom_{C^\op}(A,B)$.\\
 $\HomMor_C^{A,B}(f, x) = (g\mapsto (g \circ_C f))$\\
@@ -125,6 +124,21 @@ $$h_x = \Hom(-, x)$$
 \begin{theorem}
 $h_{-}:C\rightarrow [C^{op},\Set]$ is a fully faithful functor.
 \end{theorem}
+\noindent Proof.
+\begin{itemize}
+\item $h_-$ is a functor.\\
+Substitution: $C\coloneqq C$, $D\coloneqq [C^\op,\Set]$, $F\coloneqq h_-$,
+\begin{enumerate}
+\item $F:C \to D$
+\item $\FMor:\Pi(A\ B:C).\Hom_C(A,B) \to \Hom_D(F(A), F(B))$
+\item $\forall A\in \Ob_C, \FMor^{A,A}(1_A)=1_{F(A)}$
+\item $\forall X,Y,Z \in \Ob_C.\forall f\in\Hom_C(Y,Z).\forall g\in\Hom_C(X,Y). \FMor^{X,Z}(f\circ_C^{X,Y,Z} g)=\FMor^{Y,Z}(f)\circ_D^{F(X),F(Y),F(Z)} \FMor^{X,Y}(g)$
+\end{enumerate}
+\item $h_-$ is full.
+\item $h_-$ is faithfull.
+\item $h_-$ is injective on morphisms.
+\end{itemize}
+Qed.\\
 
 
 \end{document}

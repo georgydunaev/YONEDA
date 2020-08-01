@@ -26,8 +26,10 @@
 \newcommand{\defi}{{\mbox{def}}}
 \newcommand{\eqdef}{{\stackrel{\defi}{=}}}
 \newcommand{\Set}{{\mbox{Set}}}
-
 \begin{document}
+Some Proofs of the Category Theory\\
+Georgy Dunaev, georgedunaev@gmail.com\\
+\\
 Notes and notation:\\
 $\Ob_C$ and $C$ are used interchangeable. (e.g. $\Ob_\Set$ and $\Set$.)\\
 Duality: $\Ob_C = \Ob_{C^\op}$ and 
@@ -119,14 +121,39 @@ $\Hom_C(Z,x) \stackrel{\HomMor_C(g, x)}{\to\to\to\to\to} \Hom_C(Y,x)\stackrel{\H
 Qed.
 \begin{definition}
 Yoneda functor between categories $C$ and $[C^\op,\Set]$.
-$$h_x = \Hom(-, x)$$
+$$h_x = \Hom_C(-, x)$$
 \end{definition}
+
+
+\begin{definition}
+$$\eta : \Pi(w\in C^\op).\Hom_C(w,x)\to \Hom_C(w,y)$$
+$$\eta = \lambda (w\in C^\op). \lambda g\in\Hom_C(w,x).(f\circ_C^w,x,y g)$$
+\end{definition}
+
+\begin{lemma}
+$$\forall a,b\in C^\op. \forall m\in \Hom_C\op (a,b).\eta_b \circ_\Set \Hom_C(m,x)=\Hom_C(m,y)\circ_\Set\eta_a$$
+\end{lemma}
+\noindent Proof.\\
+Fix $a$, $b$ and $m\in\Hom_C(b,a)$.\\
+Aim: $(\lambda g_1 \in \Hom_C(b,x). f\circ^{b,x,y}_C g_1)\circ_\Set \HomMor_C^{B,A}(m,x) = $\\
+$=\HomMor_C^{B,A}(m,y) \circ_\Set (\lambda g_2 \in \Hom_C(a,x). f\circ^{a,x,y}_C g_2)$.\\
+Note that $(f\circ^{a,x,y}_C g_2) \in \Hom_C(a,y)$\\
+$\HomMor_C^{B,A}(m,y) \eqdef (\lambda g_3 \in \Hom_C(a,y). g_3\circ^{b,a,y}_C m)$\\
+$\HomMor_C^{B,A}(m,y) : \Hom_C(a,y) \to \Hom_C(b,y)$\\
+RightHandSide $= \lambda g_2 \in \Hom_C(a,x). ((f \circ_C^{a,x,y} g_2) \circ_C^{b,a,y} m )$\\
+RHS:$\Hom_C(a,x) \to \Hom_C(b,y)$\\
+$\HomMor_C^{B,A}(m,x) \eqdef (\lambda g_4 \in \Hom_C(a,y). g_4\circ^{b,a,y}_C m)$\\
+LeftHandSide $= \lambda g_2 \in \Hom_C(a,x). (f \circ_C^{b,x,y} (g_2 \circ_C^{b,a,x} m ))$\\
+LHS:$\Hom_C(a,x) \to \Hom_C(b,y)$\\
+LHS=RHS\\
+Qed.
 \begin{theorem}
 $h_{-}:C\rightarrow [C^{op},\Set]$ is a fully faithful functor.
 \end{theorem}
 \noindent Proof.
 \begin{itemize}
 \item $h_-$ is a functor.\\
+$\widetilde{h}_-$ = ...\\
 Substitution: $C\coloneqq C$, $D\coloneqq [C^\op,\Set]$, $F\coloneqq h_-$,
 \begin{enumerate}
 \item $F:C \to D$

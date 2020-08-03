@@ -19,9 +19,12 @@
 \newcommand{\Mor}{{\mbox{Mor}}}
 \newcommand{\Cat}{{\mbox{Cat}}}
 \newcommand{\Hom}{{\mbox{Hom}}}
+\newcommand{\Nat}{{\mbox{Nat}}}
 \newcommand{\HomMor}{{\widetilde{\Hom}\mbox{}}}
 \newcommand{\FMor}{{\widetilde{F}\mbox{}}}
+\newcommand{\GMor}{{\widetilde{G}\mbox{}}}
 \newcommand{\op}{{\mbox{op}}}
+\newcommand{\id}{{\mbox{id}}}
 \newcommand{\mor}{{\mbox{mor}}}
 \newcommand{\defi}{{\mbox{def}}}
 \newcommand{\eqdef}{{\stackrel{\defi}{=}}}
@@ -36,7 +39,7 @@ Duality: $\Ob_C = \Ob_{C^\op}$ and
  $\forall x,y \in \Ob_C. \Hom_C(x,y) = \Hom_{C^\op}(y,x)$.\\
 $\circ : \Pi(C\in \Cat).\Pi(X,Y,Z\in C).\Hom_C(X,Y)\times\Hom_C(Y,Z)\to\Hom_C(X,Z)$
 
-\section{Yoneda embedding theorem}
+\section{Yoneda embedding lemma}
 Let C be a locally small category.\\
 Let Set be a category of sets.\\
 $[C^{op},\mbox{Set}]$ is some functor category.\\
@@ -129,7 +132,22 @@ $$h_x = \Hom_C(-, x)$$
 $$\eta : \Pi(w\in C^\op).\Hom_C(w,x)\to \Hom_C(w,y)$$
 $$\eta = \lambda (w\in C^\op). \lambda g\in\Hom_C(w,x).(f\circ_C^w,x,y g)$$
 \end{definition}
+Now our aim is to define a natural transformation of the elements of $[C^\op,\Set]$.\\
+\begin{lemma}$\mbox{ }$\\
+We have:\\
+$F=\Hom_C(-,x)\in [C^\op,\Set]$\\
+$G=\Hom_C(-,y)\in [C^\op,\Set]$\\
+$f\in\Hom_C(x,y)$\\
+We want:\\
+Find a natural tranformation $\eta$ from $\Hom_C(-,x)$ to $\Hom_C(-,x)$.\\ (define and prove)\\
+\end{lemma}
+Fix $w\in C^\op$. $\eta_w = ?$.\\
+$\eta_w\Hom_\Set(\Hom_C(w,x),\Hom_C(w,y))$\\
+$\eta_w: \Hom_C(w,x)\to \Hom_C(w,y)$\\
 
+% prove that 
+Substitution:\\
+$C \coloneqq C^\op$, $D \coloneqq \Set$, $F \coloneqq \Hom_C(-,x)$, $G \coloneqq \Hom_C(-,y)$, $x \coloneqq a$, $y \coloneqq b$, $f \coloneqq m$
 \begin{lemma}
 $$\forall a,b\in C^\op. \forall m\in \Hom_C\op (a,b).\eta_b \circ_\Set \Hom_C(m,x)=\Hom_C(m,y)\circ_\Set\eta_a$$
 \end{lemma}
@@ -147,9 +165,9 @@ LeftHandSide $= \lambda g_2 \in \Hom_C(a,x). (f \circ_C^{b,x,y} (g_2 \circ_C^{b,
 LHS:$\Hom_C(a,x) \to \Hom_C(b,y)$\\
 LHS=RHS\\
 Qed.
-\begin{theorem}
+\begin{lemma}
 $h_{-}:C\rightarrow [C^{op},\Set]$ is a fully faithful functor.
-\end{theorem}
+\end{lemma}
 \noindent Proof.
 \begin{itemize}
 \item $h_-$ is a functor.\\
@@ -167,5 +185,49 @@ Substitution: $C\coloneqq C$, $D\coloneqq [C^\op,\Set]$, $F\coloneqq h_-$,
 \end{itemize}
 Qed.\\
 
-
+\begin{lemma}{by N.~Yoneda. (Contravariant version)}
+$G : C^\op \to \Set$\\
+$h_A = \Hom_C(-,A)$\\
+$h_A : C^\op \to \Set$\\
+$Nat(h_A,G)\sim G(A)$\\
+(there is a bijection between value of functior G and natural transformations from $h_A$ to $G$)\\
+\end{lemma}
+\noindent Proof.\\
+Let $u\in G(A)$. Let's define a natural transformation $\Phi$ from $h_A$ to $G$.\\
+$\Phi:\Pi(x\in C^\op).h_A(x)\to G(x)$ (because it's a Hom in Set)\\
+1) Let $\Phi^u_A(\id_A)\eqdef u$. \\
+Now we need to define $\Phi_x(f)$ for arbitrary $x\in C$ and\\
+$f\in h_A(x).$ $=\Hom_C(x,A).$ $=\Hom_{C^\op}(A,x). \Longrightarrow$\\
+$\Longrightarrow$ therefore $\GMor ^{A,x}(f):G(A)\to G(x)$ is defined.\\
+So the definition will be $\Phi^u_x(f)\eqdef (\GMor^{A,x}(f))(u)$.\\
+Now we need to show the correctness of the definition.\\
+$\Phi^u_A(\id_A)\eqdef (\GMor^{A,A}(f))(\id_A) = (\id_{G(A)})(u) = u$. The correctness is proved.
+2) The next aim is proving commutativity of natural transformation with functor applied to morphisms.\\
+$\forall x,y\in C^\op.\forall f\in \Hom_{C^\op}(x,y).(G(f)\circ_\Set \Phi_x) = (\Phi_y \circ_\Set (\Hom_C(f,A)))$
+Fix  $x,y\in C^\op$ and $f\in \Hom_{C^\op}(x,y)$.\\
+Aim: $(G(f)\circ_\Set \Phi_x) = (\Phi_y \circ_\Set (\Hom_C(f,A)))$.
+Fix $g\in \Hom_C(x,A)$. Recall that $\Hom_C(f,A)=(-\circ^{y,x,a})$.\\
+Aim: $(G(f)\circ_\Set \Phi_x)(g) = (\Phi_y \circ_\Set (\Hom_C(f,A)))(g)$.\\
+Equivalently, $(G(f)\circ_\Set \Phi_x)(g) = \Phi_y (g\circ_C^{y,x,A} f)$.\\
+LHS $\coloneqq (G(f)\circ_\Set \Phi_x)(g) =($def of $\Phi)= \GMor^{x,y}(f)\left(\left(\GMor^{A,x}\left(g\right)\right)\left(u\right)\right) =$\\
+$ =\GMor^{A,y}\left(g\circ_C f\right)(u)$\\
+Then since $g\circ_C f = f\circ_{C^\op} g$ and $\GMor(f\circ_{C^\op} g)=  \GMor(f)\circ_\Set \GMor(g)$ we have:\\
+RHS $\coloneqq \Phi^u_y(g\circ f)=($def of $\Phi)=\GMor^{A,y}\left(g\circ_C f\right)(u)$\\
+This LHS=RHS holds therefore we obtained a natural transformation $\Phi\in\Nat(h_A,G)$ using the $u\in G(A)$.\\
+We already know that the relation between $G(A)$ and $\Phi\in\Nat(h_A,G)$ is functional and total on $G(A)$.
+The next step is to prove its injectivity and surjectivity on $\Phi\in\Nat(h_A,G)$.\\
+Injectivity: $u_1,u_2\in G(A)$, $u_1\neq u_2$.\\
+$\Phi_{1,A}(\id(A))= u_1\neq u_2 = \Phi_{2,A}(\id(A))\quad \Longrightarrow \quad \Phi_1 \neq \Phi_2$. It's proved. \\
+Surjectivity on $\Nat(h_A,G)$.:\\
+Let $\Psi\in\Nat(h_A,G)$. Let's show that $\exists u\in G(A).\Phi^u=\Psi$.\\
+$u\coloneqq \Psi_A(\id_A)$\\
+$\Psi:\Pi(x\in C). h_A(x)\to G(x)$\\
+$\Phi^u_x(f) \eqdef (\GMor^{A,x}(f))(u)$.\\
+Fix $x\in C$ and $f\in\Hom_C(x,A)$. $\Psi_x(f)=\ ?$.
+In other words, there is a $\Psi\in\Nat(h_A,G)$, and it is known that $\Psi_A(\id_A) = u$. Find $\Psi_x(f)$.\\
+Firstly, $\id_A \in \Hom_C(A,A)$. $\Longrightarrow (\id_A \circ_C^{x,A,A} f) \in \Hom_C(x,A)$. $\Longrightarrow \Psi_x(\id_A \circ_C^{x,A,A} f)\in G(A)$. $\Longrightarrow \Psi_x(f)\in G(A)$.\\
+Secondly, $\id_A \in \Hom_C(A,A)$. $\Longrightarrow \Psi_A(\id_A) \in G(A)$. Since $\Psi_A(\id_A)=u$ we have $G(f)(u)\in G(x)$.\\
+Since $\Psi$ is a natural transformation we obtained that $\Psi_x(f)=G(f)(u),$ which is equal to $\Phi^u_x(f)$.\\
+This equality holds for any argument $f\in Hom_C(x,A)$ then $\forall x\in C. \Psi_x=\Phi^u_x$ by functional extensionality. Therefore the relation is surjective on $\Nat(h_A,G)$.
+Qed.\\
 \end{document}

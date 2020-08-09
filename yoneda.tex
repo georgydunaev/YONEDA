@@ -29,6 +29,8 @@
 \newcommand{\defi}{{\mbox{def}}}
 \newcommand{\eqdef}{{\stackrel{\defi}{=}}}
 \newcommand{\Set}{{\mbox{Set}}}
+\newcommand{\myprf}{\noindent\textbf{Proof.}}
+\newcommand{\myqed}{\noindent\textbf{Qed.}}
 \begin{document}
 Some Proofs of the Category Theory\\
 Georgy Dunaev, georgedunaev@gmail.com\\
@@ -75,7 +77,8 @@ $$\left(\mbox{another form is }\widetilde{\Hom_C(-,x)}^{A,B}(f) \eqdef (g \in\Ho
 $$\Hom_C(-, x) \in [C^\op,\Set]$$
 \end{lemma}
 
-\noindent Proof.\\
+%\noindent Proof.\\
+\myprf\\
 %\begin{itemize}
 %\end{itemize}
 Substitution:\\
@@ -121,7 +124,7 @@ $u \stackrel{\HomMor_C(g, x)}{\mapsto\mapsto\mapsto\mapsto\mapsto} (u \circ_C g)
 $\Hom_C(Z,x) \stackrel{\HomMor_C(g, x)}{\to\to\to\to\to} \Hom_C(Y,x)\stackrel{\HomMor_C(f, x)}{\to\to\to\to\to} \Hom_C(X,x)$
 \\
 \end{enumerate}
-Qed.
+\myqed
 \begin{definition}
 Yoneda functor between categories $C$ and $[C^\op,\Set]$.
 $$h_x = \Hom_C(-, x)$$
@@ -151,7 +154,7 @@ $C \coloneqq C^\op$, $D \coloneqq \Set$, $F \coloneqq \Hom_C(-,x)$, $G \coloneqq
 \begin{lemma}
 $$\forall a,b\in C^\op. \forall m\in \Hom_C\op (a,b).\eta_b \circ_\Set \Hom_C(m,x)=\Hom_C(m,y)\circ_\Set\eta_a$$
 \end{lemma}
-\noindent Proof.\\
+\myprf\\
 Fix $a$, $b$ and $m\in\Hom_C(b,a)$.\\
 Aim: $(\lambda g_1 \in \Hom_C(b,x). f\circ^{b,x,y}_C g_1)\circ_\Set \HomMor_C^{B,A}(m,x) = $\\
 $=\HomMor_C^{B,A}(m,y) \circ_\Set (\lambda g_2 \in \Hom_C(a,x). f\circ^{a,x,y}_C g_2)$.\\
@@ -164,11 +167,11 @@ $\HomMor_C^{B,A}(m,x) \eqdef (\lambda g_4 \in \Hom_C(a,y). g_4\circ^{b,a,y}_C m)
 LeftHandSide $= \lambda g_2 \in \Hom_C(a,x). (f \circ_C^{b,x,y} (g_2 \circ_C^{b,a,x} m ))$\\
 LHS:$\Hom_C(a,x) \to \Hom_C(b,y)$\\
 LHS=RHS\\
-Qed.
+\myqed
 \begin{lemma}
 $h_{-}:C\rightarrow [C^{op},\Set]$ is a fully faithful functor.
 \end{lemma}
-\noindent Proof.
+\myprf
 \begin{itemize}
 \item $h_-$ is a functor.\\
 $\widetilde{h}_-$ = ...\\
@@ -183,16 +186,15 @@ Substitution: $C\coloneqq C$, $D\coloneqq [C^\op,\Set]$, $F\coloneqq h_-$,
 \item $h_-$ is faithfull.
 \item $h_-$ is injective on morphisms.
 \end{itemize}
-Qed.\\
-
-\begin{lemma}{by N.~Yoneda. (Contravariant version)}
+\myqed
+\begin{lemma}{by N.~Yoneda. (Contravariant version)}\\
 $G : C^\op \to \Set$\\
 $h_A = \Hom_C(-,A)$\\
 $h_A : C^\op \to \Set$\\
-$Nat(h_A,G)\sim G(A)$\\
-(there is a bijection between value of functior G and natural transformations from $h_A$ to $G$)\\
+$\Nat(h_A,G)\sim G(A)$\\
+(there is a bijection between value of functior G and natural transformations from $h_A$ to $G$)
 \end{lemma}
-\noindent Proof.\\
+\myprf\\
 Let $u\in G(A)$. Let's define a natural transformation $\Phi$ from $h_A$ to $G$.\\
 $\Phi:\Pi(x\in C^\op).h_A(x)\to G(x)$ (because it's a Hom in Set)\\
 1) Let $\Phi^u_A(\id_A)\eqdef u$. \\
@@ -228,6 +230,6 @@ In other words, there is a $\Psi\in\Nat(h_A,G)$, and it is known that $\Psi_A(\i
 Firstly, $\id_A \in \Hom_C(A,A)$. $\Longrightarrow (\id_A \circ_C^{x,A,A} f) \in \Hom_C(x,A)$. $\Longrightarrow \Psi_x(\id_A \circ_C^{x,A,A} f)\in G(A)$. $\Longrightarrow \Psi_x(f)\in G(A)$.\\
 Secondly, $\id_A \in \Hom_C(A,A)$. $\Longrightarrow \Psi_A(\id_A) \in G(A)$. Since $\Psi_A(\id_A)=u$ we have $G(f)(u)\in G(x)$.\\
 Since $\Psi$ is a natural transformation we obtained that $\Psi_x(f)=G(f)(u),$ which is equal to $\Phi^u_x(f)$.\\
-This equality holds for any argument $f\in Hom_C(x,A)$ then $\forall x\in C. \Psi_x=\Phi^u_x$ by functional extensionality. Therefore the relation is surjective on $\Nat(h_A,G)$.
-Qed.\\
+This equality holds for any argument $f\in \Hom_C(x,A)$ then $\forall x\in C. \Psi_x=\Phi^u_x$ by functional extensionality. Therefore the relation is surjective on $\Nat(h_A,G)$.
+\myqed\\
 \end{document}

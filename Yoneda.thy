@@ -87,8 +87,28 @@ proof(unfold eqtyperefl_def)
 qed
 
 (* locale *)
+(* for U-small categiries *)
+locale catloc = 
+  fixes U :: "i"
+  fixes C :: "i"
+  fixes Hom :: "i"
+  assumes homfun : \<open>Hom : C\<times>C \<rightarrow> U\<close>
+  fixes compo :: "i"
+  assumes compodef: \<open>compo : (\<Prod>X\<in>C. \<Prod>Y\<in>C. \<Prod>Z\<in>C.
+ (Hom ` <X,Y> \<times> Hom ` <Y,Z> \<rightarrow> Hom ` <X,Z>))\<close>
+  fixes id :: "i"
+  assumes idinhom: \<open>id : (\<Prod>A\<in>C.  (Hom ` <A,A>))\<close>
 
+context catloc
+begin
+
+lemma l1: \<open>domain(id) = C\<close>
+  by (rule func.domain_of_fun, rule idinhom)
+
+end
 (*
+(*  assumes idinhom: \<open>A\<in>C \<Longrightarrow> (id ` A) : Hom ` <A,A>\<close> *)
+
 definition IsCat :: \<open>[i, [i, i] \<Rightarrow> i] \<Rightarrow> o\<close>
 *)
 

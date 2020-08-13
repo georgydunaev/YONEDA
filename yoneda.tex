@@ -15,6 +15,9 @@
 % \theoremstyle{theorem}
 \newtheorem{theorem}{Theorem}[section]
 
+\newtheorem{exercise}{Exercise}[section]
+\newcommand{\dom}{{\mbox{dom}}}
+\newcommand{\The}{{\mbox{The\,}}}
 \newcommand{\Ob}{{\mbox{Ob}}}
 \newcommand{\Mor}{{\mbox{Mor}}}
 \newcommand{\Cat}{{\mbox{Cat}}}
@@ -26,22 +29,72 @@
 \newcommand{\op}{{\mbox{op}}}
 \newcommand{\id}{{\mbox{id}}}
 \newcommand{\mor}{{\mbox{mor}}}
+\newcommand{\LRA}{\Longleftrightarrow}
 \newcommand{\defi}{{\mbox{def}}}
 \newcommand{\eqdef}{{\stackrel{\defi}{=}}}
+\newcommand{\propdef}{{\stackrel{\defi}{\ \Longleftrightarrow\ }}}
+\newcommand{\inter}{{\bigcap}}
+\newcommand{\interclass}{{{\bigcap}_C}}
 \newcommand{\Set}{{\mbox{Set}}}
 \newcommand{\myprf}{\noindent\textbf{Proof.}}
 \newcommand{\myqed}{\noindent\textbf{Qed.}}
 \begin{document}
 Some Proofs of the Category Theory\\
 Georgy Dunaev, georgedunaev@gmail.com\\
-\\
+\section{Logic and Set Theory}
+\subsection{Intersections}
+\begin{definition} Class intersection
+$$\interclass K \propdef \{x: \forall k\in K. x\in k\}$$
+\end{definition}
+
+\begin{definition} Set intersection
+$$\inter K \propdef \{x: (\forall k\in K. x\in k)\land (\exists k.k\in K)\}$$
+\end{definition}
+
+\subsection{Binders}
+\begin{definition} Uniqueness quantifier
+$$!x. P(x) \propdef \forall x_1 \forall x_2. P(x_1)\land P(x_2)\to x_1=x_2$$
+\end{definition}
+
+\begin{definition} ``Exists and unique'' quantifier
+$$\exists !x. P(x) \propdef (\exists x. P(x))\land(!x. P(x))$$
+\end{definition}
+
+\begin{definition}  Dual for previous quantifier 
+$$?x. P(x) \propdef \neg !x. \neg P(x)$$
+\end{definition}
+
+\begin{exercise}
+$!x. P(x) \LRA \neg ?x. \neg P(x)$
+\end{exercise}
+
+\begin{definition} Description binder
+$$\The x. P(x) \propdef \inter \{x:P(x)\ \land\ !w.P(w)\}$$
+\end{definition}
+
+\begin{exercise}
+$(P(a)\ \land\ !w.P(w)) \rightarrow (\The x. P(x))=a$
+\end{exercise}
+
+\begin{exercise}
+$(\exists !w.P(w)) \rightarrow P(\The x. P(x))$
+\end{exercise}
+
+\subsection{Values of functions}
+
+\begin{exercise}
+$x\notin \dom(g)\to (g'x)=\emptyset$
+\end{exercise}
+
+
+\section{Category Theory}
 Notes and notation:\\
 $\Ob_C$ and $C$ are used interchangeable. (e.g. $\Ob_\Set$ and $\Set$.)\\
 Duality: $\Ob_C = \Ob_{C^\op}$ and 
  $\forall x,y \in \Ob_C. \Hom_C(x,y) = \Hom_{C^\op}(y,x)$.\\
 $\circ : \Pi(C\in \Cat).\Pi(X,Y,Z\in C).\Hom_C(X,Y)\times\Hom_C(Y,Z)\to\Hom_C(X,Z)$
 
-\section{Yoneda embedding lemma}
+\subsection{Yoneda embedding lemma}
 Let C be a locally small category.\\
 Let Set be a category of sets.\\
 $[C^{op},\mbox{Set}]$ is some functor category.\\

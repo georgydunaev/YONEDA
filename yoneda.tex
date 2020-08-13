@@ -16,7 +16,10 @@
 \newtheorem{theorem}{Theorem}[section]
 
 \newtheorem{exercise}{Exercise}[section]
+\newcommand{\Fun}{{\mbox{Fun}}}
+\newcommand{\Rel}{{\mbox{Rel}}}
 \newcommand{\dom}{{\mbox{dom}}}
+\newcommand{\apo}{{\mbox{'}}}  % apostrophe
 \newcommand{\The}{{\mbox{The\,}}}
 \newcommand{\Ob}{{\mbox{Ob}}}
 \newcommand{\Mor}{{\mbox{Mor}}}
@@ -47,10 +50,21 @@ Georgy Dunaev, georgedunaev@gmail.com\\
 $$\interclass K \propdef \{x: \forall k\in K. x\in k\}$$
 \end{definition}
 
+\begin{exercise}
+$K\neq \emptyset \to \interclass K \in \Set$
+\end{exercise}
+
+\begin{exercise}
+$K=\emptyset \to \interclass K = \Set$
+\end{exercise}
+
 \begin{definition} Set intersection
 $$\inter K \propdef \{x: (\forall k\in K. x\in k)\land (\exists k.k\in K)\}$$
 \end{definition}
 
+\begin{exercise}
+$\inter K \in \Set$
+\end{exercise}
 \subsection{Binders}
 \begin{definition} Uniqueness quantifier
 $$!x. P(x) \propdef \forall x_1 \forall x_2. P(x_1)\land P(x_2)\to x_1=x_2$$
@@ -81,11 +95,24 @@ $(\exists !w.P(w)) \rightarrow P(\The x. P(x))$
 \end{exercise}
 
 \subsection{Values of functions}
+Notation: $g(x)$ also means $(g\apo x).$\\
 
 \begin{exercise}
-$x\notin \dom(g)\to (g'x)=\emptyset$
+$x\notin \dom(g)\to (g\apo x)=\emptyset$
 \end{exercise}
 
+\subsection{Extensionality}
+\begin{theorem}
+Assume $\forall~x\in X. g_1(x)=g_2(x)$, $\Rel(g_1)$, $\Fun(g_1)$,$\Fun(g_2)$,\\ $\dom(g_1)\subseteq\dom(g_2)$ and show that $g_1\subseteq g_2$.\\
+\myprf\\
+$p\in g_1$.
+$\stackrel{\Rel(g_1)}{\Longrightarrow}$
+There exists $a$, $b$ such that $p=\langle a, b\rangle$.
+$\stackrel{p\in g_1}{\Longrightarrow}$ $\langle a, b\rangle\in g_1$.
+\\
+... to be continued ...
+\\\myqed 
+\end{theorem}
 
 \section{Category Theory}
 Notes and notation:\\

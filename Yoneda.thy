@@ -1,5 +1,9 @@
-theory Yoneda imports ZF
+theory Yoneda imports mylibrary
 begin
+(* Lemmas, they may be ommitted: *)
+(*
+lemma : \<open>[Rel(f) ] \<Longrightarrow> g1 \<subseteq> g2\<close>
+*)
 (*
 definition add_g :: \<open>i\<close>
   where add_g_def : \<open>add_g == \<lambda>x\<in>(nat*nat). succ(fst(x))\<close>
@@ -88,6 +92,7 @@ qed
 
 (* locale *)
 (* for U-small categiries *)
+
 locale catloc = 
   fixes U :: "i"
   fixes C :: "i"
@@ -106,9 +111,9 @@ lemma l1: \<open>domain(id) = C\<close>
   by (rule func.domain_of_fun, rule idinhom)
 
 end
+
 (*
 (*  assumes idinhom: \<open>A\<in>C \<Longrightarrow> (id ` A) : Hom ` <A,A>\<close> *)
-
 definition IsCat :: \<open>[i, [i, i] \<Rightarrow> i] \<Rightarrow> o\<close>
 *)
 

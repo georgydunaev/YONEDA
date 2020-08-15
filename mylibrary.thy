@@ -1,9 +1,11 @@
 theory mylibrary imports ZF
 begin
+
 (*
-definition eqtype :: \<open>[i,i] \<Rightarrow> i\<close>
-  where "eqtype(x,y) == {_\<in>{0}. x=y}"
+ {x: ... } should be a notation for \<lambda>x. ...
+ (only for terms of type (i\<Rightarrow>o) )
 *)
+
 (* Binary relation *)
 definition Rel :: \<open>i \<Rightarrow> o\<close>
   where "Rel(f) \<equiv> \<forall>p\<in>f. \<exists>x. \<exists>y. p = <x,y>"
@@ -37,7 +39,7 @@ definition Fun :: \<open>i \<Rightarrow> o\<close>
 definition EmpS :: \<open>i\<close>
   where "EmpS \<equiv> THE a. \<forall>q. q \<notin> a"
 
-(* Intersection of class *)
+(* Intersection of class OLD *)
 definition intersecOLD :: \<open>(i \<Rightarrow> o) \<Rightarrow> i\<close>
 where "intersecOLD(K) == THE x. \<forall>m. K(m) \<longrightarrow> x \<subseteq> m"
 
@@ -48,14 +50,10 @@ definition inhab :: "i \<Rightarrow> o"
 definition inhabC :: "(i \<Rightarrow> o) \<Rightarrow> o"
   where "inhabC(K) \<equiv> \<exists>m. K(m)"
 
+(* Intersection of class NEW *)
 definition
   myInterC :: "(i \<Rightarrow> o) \<Rightarrow> (i \<Rightarrow> o)"
   where "myInterC(K) == \<lambda>x. (\<forall>m. K(m) \<longrightarrow> x\<in>m)"
-
-(*
- {x: ... } should be a notation for \<lambda>x. ...
- (only for terms of type (i\<Rightarrow>o) )
-*)
 
 axiomatization
   myInter :: "(i \<Rightarrow> o) \<Rightarrow> i"
@@ -64,6 +62,10 @@ where
 ((\<forall>m. K(m) \<longrightarrow> A\<in>m) \<and> (\<exists>B. K(B)))" *)
   myInter_iff: "A \<in> myInter(K) \<longleftrightarrow> 
     (myInterC(K)(A) \<and> inhabC(K))"
+
+theorem redefrepl:
+  assumes "funcon(A,P)"
+  shows "intersecOLD(K) = myInter(K)"
 
 (* One may prove that
 intersecOLD(K) = myInter(K)
@@ -98,13 +100,15 @@ axiomatization
 definition myPrimReplace :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> i"
   where "myPrimReplace(A,P) == myInter(supimg(A,P))"
 
-(* TODO: myPrimReplace(A,P) = PrimReplace(A,P) *)
-
-
-(* TODO:
-(\<forall>x\<in>A. !w. P(x,w)) \<Longrightarrow>
-  b \<in> ? \<longleftrightarrow> (\<exists>x\<in>A. P(x,b))"
+theorem redefrepl:
+  assumes "funcon(A,P)"
+  shows "myPrimReplace(A,P) = PrimReplace(A,P)"
+(*
+proof
+ 1. myPrimReplace(A, P) \<subseteq> PrimReplace(A, P)
+ 2. PrimReplace(A, P) \<subseteq> myPrimReplace(A, P)
+qed
 *)
-
+  sorry
 
 end

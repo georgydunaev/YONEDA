@@ -6,7 +6,7 @@ definition eqtype :: \<open>[i,i] \<Rightarrow> i\<close>
 *)
 (* Binary relation *)
 definition Rel :: \<open>i \<Rightarrow> o\<close>
-  where "Rel(f) == \<forall>p\<in>f. \<exists>x. \<exists>y. p = <x,y>"
+  where "Rel(f) \<equiv> \<forall>p\<in>f. \<exists>x. \<exists>y. p = <x,y>"
 
 lemma RelE :
   assumes H1:\<open>Rel(f)\<close>
@@ -24,34 +24,87 @@ proof -
   then have \<open>P(<x,y>)\<close> by (rule H3)
   from \<open>P(<x,y>)\<close> and H1 show \<open>P(p)\<close> by auto
 qed
-(*lemma q1 : "\<lbrakk>Rel(f); p\<in>f; \<And>x y. <x,y>\<in>f \<Longrightarrow> P(<x,y>)\<rbrakk>
- \<Longrightarrow> P(p)"*)
+
+(* "At most one" quantifier *)
+definition Only1 :: \<open>('a \<Rightarrow> o) \<Rightarrow> o\<close>  (binder \<open>!\<close> 10)
+  where only1_def: \<open>!x. P(x) \<equiv> (\<forall>x.\<forall>y. P(x) \<and> P(y) \<longrightarrow> x = y)\<close>
+
+(* Binary relation *)
+definition Fun :: \<open>i \<Rightarrow> o\<close>
+  where "Fun(f) \<equiv> \<forall>a. !w. <a,w> \<in> f"
+
+(* Example: *)
+definition EmpS :: \<open>i\<close>
+  where "EmpS \<equiv> THE a. \<forall>q. q \<notin> a"
+
+(* Intersection of class *)
+definition intersecOLD :: \<open>(i \<Rightarrow> o) \<Rightarrow> i\<close>
+where "intersecOLD(K) == THE x. \<forall>m. K(m) \<longrightarrow> x \<subseteq> m"
+
+(* Inhabited *)
+definition inhab :: "i \<Rightarrow> o"
+  where "inhab(s) \<equiv> \<exists>m. m\<in>s"
+
+definition inhabC :: "(i \<Rightarrow> o) \<Rightarrow> o"
+  where "inhabC(K) \<equiv> \<exists>m. K(m)"
+
+definition
+  myInterC :: "(i \<Rightarrow> o) \<Rightarrow> (i \<Rightarrow> o)"
+  where "myInterC(K) == \<lambda>x. (\<forall>m. K(m) \<longrightarrow> x\<in>m)"
 
 (*
-  show "P(p)"
-  proof(rule exE[OF H1])
-    fix x
-    assume H1:"\<exists>y. p = \<langle>x, y\<rangle>"
-    show "P(p)"
-    proof(rule exE[OF H1])
-      fix y
-      assume H1:"p = \<langle>x, y\<rangle>"
-      have B:"P(<x,y>)"
-      proof(rule H3[OF ])
-        from H1 and H2 show \<open>\<langle>x, y\<rangle> \<in> f\<close>
-          by auto
-      qed
-      from H1 and B show "P(p)" by auto
-    qed
-  qed
+ {x: ... } should be a notation for \<lambda>x. ...
+ (only for terms of type (i\<Rightarrow>o) )
 *)
-qed
 
-  have "0\<in>1"
-    sorry
+axiomatization
+  myInter :: "(i \<Rightarrow> o) \<Rightarrow> i"
+where
+(*  myInter_iff: "A \<in> myInter(K) \<longleftrightarrow> 
+((\<forall>m. K(m) \<longrightarrow> A\<in>m) \<and> (\<exists>B. K(B)))" *)
+  myInter_iff: "A \<in> myInter(K) \<longleftrightarrow> 
+    (myInterC(K)(A) \<and> inhabC(K))"
+
+(* One may prove that
+intersecOLD(K) = myInter(K)
+*)
+
+(* My "The" binder *)
+definition myThe :: \<open>(i \<Rightarrow> o) \<Rightarrow> i\<close>
+  where "myThe(P) == myInter(\<lambda>x. P(x))"
+
+(*
+PrimReplace :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> i"
+replacement : "(\<forall>x\<in>A. \<forall>y z. P(x,y) \<and> P(x,z) \<longrightarrow> y = z)
+ \<Longrightarrow>  b \<in> PrimReplace(A,P) \<longleftrightarrow> (\<exists>x\<in>A. P(x,b))"
+*)
+
+definition imageC :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> (i\<Rightarrow>o)"
+  where "imageC(A,P) == %b. \<exists>x\<in>A. P(x,b)"
+
+definition supersets :: "(i\<Rightarrow>o) \<Rightarrow> (i\<Rightarrow>o)"
+  where "supersets(K) == \<lambda>x. \<forall>k. K(x) \<longrightarrow> k\<in>x"
+
+definition supimg :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> (i\<Rightarrow>o)"
+  where "supimg(A,P) == supersets(imageC(A,P))"
+
+definition funcon :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> o"
+  where "funcon(A,P) == (\<forall>x\<in>A. !w. P(x,w))"
+
+axiomatization
+  where myreplacement:
+    "funcon(A,P) \<Longrightarrow> inhabC(supimg(A,P))"
+
+definition myPrimReplace :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> i"
+  where "myPrimReplace(A,P) == myInter(supimg(A,P))"
+
+(* TODO: myPrimReplace(A,P) = PrimReplace(A,P) *)
 
 
+(* TODO:
+(\<forall>x\<in>A. !w. P(x,w)) \<Longrightarrow>
+  b \<in> ? \<longleftrightarrow> (\<exists>x\<in>A. P(x,b))"
+*)
 
-(unfold eqtype_def)
 
 end

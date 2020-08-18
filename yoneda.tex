@@ -41,10 +41,71 @@
 \newcommand{\Set}{{\mbox{Set}}}
 \newcommand{\myprf}{\noindent\textbf{Proof.}}
 \newcommand{\myqed}{\noindent\textbf{Qed.}}
+
+\usepackage{float} % H hardposition for tables ( tlmgr install float )
 \begin{document}
 Some Proofs of the Category Theory\\
 Georgy Dunaev, georgedunaev@gmail.com\\
 \section{Logic and Set Theory}
+\begin{table}[H]
+\centering
+\caption{Axiom schemata of predicate calculus with equality}
+%\caption{Схемы аксиом логики предикатов с равенством}
+\label{tab:axiompltab}
+\begin{tabular}{|c|c|c|c|}
+\hline
+% назвывние & утверждение & условие\\ \hline
+name & statement & condition & parameters(meta)\\ \hline
+\hline
+impI & $A \to (B \to A)$ & - & $A,B \in \mbox{Fm}$\\ %\hline
+impE & $(A \to (B \to C))\to((A\to B)\to(A\to C))$ & -& $A,B,C \in \mbox{Fm}$\\ \hline
+\hline
+andE1 & $A \land B \to A$& -& $A,B \in \mbox{Fm}$\\ %\hline
+andE2 & $A \land B \to B$& -& $A,B \in \mbox{Fm}$\\ %\hline
+andI & $A\to(B\to (A \land B))$& -& $A,B \in \mbox{Fm}$\\ \hline
+\hline
+orI1 & $A \to  A \lor B$& -& $A,B \in \mbox{Fm}$\\ %\hline
+orI2 & $B \to  A \lor B$& -& $A,B \in \mbox{Fm}$\\ %\hline
+orE & $(A \to  C)\to ((B \to  C) \to  (A \lor B \to  C))$& -& $A,B,C \in \mbox{Fm}$\\ \hline
+\hline
+negI & $(A \to  B) \to  ((A \to  \neg B) \to  \neg A)$& -& $A,B \in \mbox{Fm}$\\ %\hline
+negE & $A \to  (\neg A \to  B)$& -& $A,B \in \mbox{Fm}$\\ \hline
+\hline
+LEM & $A \lor \neg A$& -& $A \in \mbox{Fm}$\\ \hline
+\hline
+$\forall$E & $\forall xA\to A(t/x)$ & $\mbox{FFI}(t,x,A)$& $A \in \mbox{Fm}$\\ %\hline
+$\exists$I & $A(t/x)\to \exists x A$ & $\mbox{FFI}(t,x,A)$& $A \in \mbox{Fm}$\\ \hline
+\hline
+=refl&$\forall w (w=w)$&-& $w \in \mbox{Var}$\\
+=subs&$(x=y)\to ( A(x/y)\to A) $&$\mbox{FFI}(x,y,A)$& $A \in \mbox{Fm}$\\\hline
+\end{tabular}
+\end{table}
+%Схема аксиом логики предикатов без равенства получается, если удалить последние две аксиомы.
+%Здесь мы обозначили как $\mbox{FFI}(t,x,A)$ утверждение ``Терм $t$ свободен для подстановки вместо переменной $x$ в формуле $A$'', и как $A(t/x)$ -- результат корректной подстановки терма t вместо x.\\
+
+\begin{table}[H]
+\centering
+% Rules of predicate calculus
+%\caption{Правила вывода логики предикатов} \label{tab:rulestab}
+\begin{tabular}{|c|c|c|c|}
+\hline
+name & rule & condition & parameters \\ \hline
+%название & правило & условие \\ \hline
+\hline
+MP &  \rule[-2.5ex]{0pt}{7ex} $\frac{A\to B\quad A}{B}$ & - \\ \hline %(\mbox{MP})
+\hline
+%\hline
+%\infer[(\forall\mbox{I})]{A\to \forall x B}{A\to B}, если $x \notin \mbox{FV}(A)$\\
+\rule[-2.5ex]{0pt}{7ex}
+$\forall$I & $\frac{A\to B}{A\to \forall x B}$ & $x \notin \mbox{FV}(A)$\\ \hline %(\forall\mbox{I})
+\hline
+%\hline
+\rule[-2.5ex]{0pt}{7ex}
+$\exists$E & $\frac{A\to B}{\exists x A\to B}$ & $x \notin \mbox{FV}(B)$\\ %(\mbox{$\exists$E})
+\hline
+\end{tabular}
+\end{table}
+
 \subsection{Intersections}
 \begin{definition} Class intersection
 $$\interclass K \propdef \{x: \forall k\in K. x\in k\}$$

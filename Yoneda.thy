@@ -112,6 +112,7 @@ lemma l1: \<open>domain(id) = C\<close>
 
 end
 
+
 (*
 (*  assumes idinhom: \<open>A\<in>C \<Longrightarrow> (id ` A) : Hom ` <A,A>\<close> *)
 definition IsCat :: \<open>[i, [i, i] \<Rightarrow> i] \<Rightarrow> o\<close>
@@ -127,4 +128,38 @@ definition IsCat :: \<open>[i, [i, i] \<Rightarrow> i] \<Rightarrow> o\<close>
   where \<open>IsCat(C, Comp) == C=C\<close>
 *)
 
-end
+definition PROPFALSE1 :: "prop"
+  where \<open>PROPFALSE1 == Pure.all (%(P::o). Trueprop(P))\<close>
+
+definition PROPFALSE2 :: "prop"
+  where \<open>PROPFALSE == (\<And>P::o. (Trueprop(P)))\<close>
+
+
+definition PROPFALSE
+  where \<open>PROPFALSE == Pure.all (\<lambda>(P::prop). P)\<close>
+
+definition PROPTRUE :: "prop"
+  where \<open>PROPTRUE == (\<And>i::i. i=i)\<close>
+
+definition ex1
+  where \<open>ex1 == (\<And>i::i. i=i)\<close>
+
+(*
+definition ex1bad
+  where \<open>ex1 == (\<And>i::o. i=i)\<close>
+
+definition ex2
+  where \<open>ex2 == (\<And>f i::i. f(i)=f(i))\<close>
+*)
+
+theorem somethm : "\<And>n::o\<Rightarrow>o. (\<And>P::o. (P\<longrightarrow>n(P))) \<Longrightarrow> (\<And>P::o. (P\<longrightarrow>n(n(P))))"
+proof
+  fix n
+  assume H1:"(\<And>P::o. (P\<longrightarrow>n(P)))"
+  fix P
+  assume H2:"P"
+  have H3:"n(P)"
+    by (rule mp[OF H1 H2])
+  show H4:"n(n(P))"
+    by (rule mp[OF H1 H3])
+qed

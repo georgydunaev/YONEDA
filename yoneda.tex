@@ -42,6 +42,10 @@
 \newcommand{\myprf}{\noindent\textbf{Proof.}}
 \newcommand{\myqed}{\noindent\textbf{Qed.}}
 
+\newcommand{\TOrd}{{\mbox{TOrd}}}
+\newcommand{\Tr}{{\mbox{Tr}}}
+\newcommand{\mysucc}{{\mbox{succ}}}
+
 \usepackage{float} % H hardposition for tables ( tlmgr install float )
 \begin{document}
 Some Proofs of the Category Theory\\
@@ -174,7 +178,35 @@ $\stackrel{p\in g_1}{\Longrightarrow}$ $\langle a, b\rangle\in g_1$.
 ... to be continued ...
 \\\myqed 
 \end{theorem}
-
+\subsection{Misc}
+\begin{definition}
+$\TOrd(A) \longleftrightarrow \Tr(A)\land \forall a\in A. \Tr(a)$
+\end{definition}
+\begin{theorem}
+$\exists A. \Tr(A) \land \neg \forall a\in A. \Tr(a)$
+\\Example: $A\coloneqq \{1\}$.
+\end{theorem}
+\begin{theorem}
+$\Tr(A) \longrightarrow \Tr(A\cup\{A\})$
+\\\myprf
+\\$\forall x\in A.x\subseteq A.$
+\\$x\in A\cup\{A\} \longrightarrow x\in A \lor x=A$
+\\1) $x\in A. \Longrightarrow x\subseteq A. \Longrightarrow x\subseteq A\cup\{A\}$
+\\2) $x = A. \Longrightarrow x\subseteq A. \Longrightarrow x\subseteq A\cup\{A\}$
+\\\myqed
+\end{theorem}
+\begin{theorem}
+  $ \TOrd(A) \longrightarrow \TOrd(\mysucc(A))$
+\\\myprf
+\\From H:$\TOrd(A)$ we have:
+\\H1: $\Tr(A)$
+\\H2: $\forall a\in A. \Tr(a)$
+\\Aim1: $\Tr(\mysucc(A))$ (by previous theorem and H1)
+\\Aim2: $\forall x\in A\cup\{A\}. \Tr(x)$
+\\1) $x\in A. \Longrightarrow \Tr(x)$ (by H2)
+\\2) $x = A. \Longrightarrow \Tr(x)$ (by H1) % assumption, part 1)
+\\\myqed
+\end{theorem}
 \section{Category Theory}
 Notes and notation:\\
 $\Ob_C$ and $C$ are used interchangeable. (e.g. $\Ob_\Set$ and $\Set$.)\\

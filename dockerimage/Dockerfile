@@ -1,5 +1,4 @@
-#!/usr/bin/env -S docker build . --tag=obelisk/AIsandbox:v1 --network=host --file
-
+#!/usr/bin/env -S docker build . --tag=obelisk/aisandbox:v1 --network=host --file
 
 # syntax=docker/dockerfile:1
 

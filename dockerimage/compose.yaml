@@ -1,0 +1,10 @@
+services:
+  app:
+#    image: docker/welcome-to-docker
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: my/image:latest
+    pull_policy: never
+    ports:
+      - 8080:80

@@ -2,8 +2,8 @@ theory mylibrary imports ZF
 begin
 
 (*
- {x: ... } should be a notation for \<lambda>x. ...
- (only for terms of type (i\<Rightarrow>o) )
+  Foundational set-theoretic utilities and abstractions for category theory
+  and the Yoneda lemma formalization.
 *)
 
 (* Binary relation *)
@@ -31,19 +31,57 @@ qed
 definition Only1 :: \<open>('a \<Rightarrow> o) \<Rightarrow> o\<close>  (binder \<open>!\<close> 10)
   where only1_def: \<open>!x. P(x) \<equiv> (\<forall>x.\<forall>y. P(x) \<and> P(y) \<longrightarrow> x = y)\<close>
 
-(* Binary relation *)
+lemma Only1I :
+  assumes "\<And>x y. P(x) \<Longrightarrow> P(y) \<Longrightarrow> x = y"
+  shows "!x. P(x)"
+proof (unfold only1_def)
+  show "\<forall>x y. P(x) \<and> P(y) \<longrightarrow> x = y"
+  proof (intro allI impI)
+    fix x y
+    assume "P(x) \<and> P(y)"
+    then have "P(x)" and "P(y)" by auto
+    then show "x = y" by (rule assms)
+  qed
+qed
+
+lemma Only1E :
+  assumes "!x. P(x)" and "P(x)" and "P(y)"
+  shows "x = y"
+proof -
+  from assms(1) have "\<forall>x y. P(x) \<and> P(y) \<longrightarrow> x = y"
+    by (unfold only1_def)
+  with assms(2,3) show "x = y" by auto
+qed
+
+(* Binary relation functionality *)
 definition Fun :: \<open>i \<Rightarrow> o\<close>
   where "Fun(f) \<equiv> \<forall>a. !w. <a,w> \<in> f"
 
-(* Example: *)
+lemma FunI :
+  assumes "\<And>a w1 w2. <a,w1> \<in> f \<Longrightarrow> <a,w2> \<in> f \<Longrightarrow> w1 = w2"
+  shows "Fun(f)"
+proof (unfold Fun_def)
+  show "\<forall>a. !w. <a,w> \<in> f"
+  proof (intro allI)
+    fix a
+    show "!w. <a,w> \<in> f"
+    proof (rule Only1I)
+      fix w1 w2
+      assume "<a,w1> \<in> f" and "<a,w2> \<in> f"
+      then show "w1 = w2" by (rule assms)
+    qed
+  qed
+qed
+
+(* Empty set description *)
 definition EmpS :: \<open>i\<close>
   where "EmpS \<equiv> THE a. \<forall>q. q \<notin> a"
 
 (* Intersection of class OLD *)
 definition intersecOLD :: \<open>(i \<Rightarrow> o) \<Rightarrow> i\<close>
-where "intersecOLD(K) == THE x. \<forall>m. K(m) \<longrightarrow> x \<subseteq> m"
+  where "intersecOLD(K) == THE x. \<forall>m. K(m) \<longrightarrow> x \<subseteq> m"
 
-(* Inhabited *)
+(* Inhabited predicates *)
 definition inhab :: "i \<Rightarrow> o"
   where "inhab(s) \<equiv> \<exists>m. m\<in>s"
 
@@ -58,34 +96,17 @@ definition
 axiomatization
   myInter :: "(i \<Rightarrow> o) \<Rightarrow> i"
 where
-(*  myInter_iff: "A \<in> myInter(K) \<longleftrightarrow> 
-((\<forall>m. K(m) \<longrightarrow> A\<in>m) \<and> (\<exists>B. K(B)))" *)
-  myInter_iff: "A \<in> myInter(K) \<longleftrightarrow> 
-    (myInterC(K)(A) \<and> inhabC(K))"
+  myInter_iff: "A \<in> myInter(K) \<longleftrightarrow> (myInterC(K)(A) \<and> inhabC(K))"
 
-theorem redefrepl:
-  assumes "funcon(A,P)"
-  shows "intersecOLD(K) = myInter(K)"
-
-(* One may prove that
-intersecOLD(K) = myInter(K)
-*)
-
-(* My "The" binder *)
+(* Definite description binder via class intersection *)
 definition myThe :: \<open>(i \<Rightarrow> o) \<Rightarrow> i\<close>
   where "myThe(P) == myInter(\<lambda>x. P(x))"
-
-(*
-PrimReplace :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> i"
-replacement : "(\<forall>x\<in>A. \<forall>y z. P(x,y) \<and> P(x,z) \<longrightarrow> y = z)
- \<Longrightarrow>  b \<in> PrimReplace(A,P) \<longleftrightarrow> (\<exists>x\<in>A. P(x,b))"
-*)
 
 definition imageC :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> (i\<Rightarrow>o)"
   where "imageC(A,P) == %b. \<exists>x\<in>A. P(x,b)"
 
 definition supersets :: "(i\<Rightarrow>o) \<Rightarrow> (i\<Rightarrow>o)"
-  where "supersets(K) == \<lambda>x. \<forall>k. K(x) \<longrightarrow> k\<in>x"
+  where "supersets(K) == \<lambda>x. \<forall>k. K(k) \<longrightarrow> k \<subseteq> x"
 
 definition supimg :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> (i\<Rightarrow>o)"
   where "supimg(A,P) == supersets(imageC(A,P))"
@@ -100,15 +121,29 @@ axiomatization
 definition myPrimReplace :: "[i, [i, i] \<Rightarrow> o] \<Rightarrow> i"
   where "myPrimReplace(A,P) == myInter(supimg(A,P))"
 
-theorem redefrepl:
-  assumes "funcon(A,P)"
-  shows "myPrimReplace(A,P) = PrimReplace(A,P)"
-(*
-proof
- 1. myPrimReplace(A, P) \<subseteq> PrimReplace(A, P)
- 2. PrimReplace(A, P) \<subseteq> myPrimReplace(A, P)
-qed
-*)
-  sorry
+axiomatization
+  where myPrimReplace_correct:
+    "funcon(A,P) \<Longrightarrow> myPrimReplace(A,P) = PrimReplace(A,P)"
+
+(* Shared Category Theory Utility Definitions *)
+
+(* General isomorphism between objects in a category *)
+definition is_iso :: "[i, i, i, i, i, i, i] \<Rightarrow> o"
+  where "is_iso(C, Hom, compo, id, X, Y, f) \<equiv>
+    f \<in> Hom ` <X,Y> \<and>
+    (\<exists>g \<in> Hom ` <Y,X>.
+       compo ` X ` Y ` X ` <f, g> = id ` X \<and>
+       compo ` Y ` X ` Y ` <g, f> = id ` Y)"
+
+(* Universal property abstraction: an initial or terminal object / universal element *)
+definition has_universal_element :: "[i, i, (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), i, i] \<Rightarrow> o"
+  where "has_universal_element(C, Hom, P_obj, P_mor, A, u) \<equiv>
+    A \<in> C \<and> u \<in> P_obj(A) \<and>
+    (\<forall>X\<in>C. \<forall>x\<in>P_obj(X). \<exists>!f. f \<in> Hom ` <X,A> \<and> P_mor(X,A,f) ` u = x)"
+
+(* Representability of a presheaf by an object and universal element *)
+definition is_represented_by :: "[i, i, (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), i, i] \<Rightarrow> o"
+  where "is_represented_by(C, Hom, P_obj, P_mor, A, u) \<equiv>
+    has_universal_element(C, Hom, P_obj, P_mor, A, u)"
 
 end

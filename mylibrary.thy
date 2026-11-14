@@ -146,4 +146,62 @@ definition is_represented_by :: "[i, i, (i \<Rightarrow> i), (i \<Rightarrow> i 
   where "is_represented_by(C, Hom, P_obj, P_mor, A, u) \<equiv>
     has_universal_element(C, Hom, P_obj, P_mor, A, u)"
 
+(* Functor between categories *)
+definition is_functor :: "[i, i, i, i, i, i, i, i, (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i)] \<Rightarrow> o"
+  where "is_functor(C, HomC, compoC, idC, D, HomD, compoD, idD, F_obj, F_mor) \<equiv>
+    (\<forall>X\<in>C. F_obj(X) \<in> D) \<and>
+    (\<forall>X\<in>C. \<forall>Y\<in>C. \<forall>f \<in> HomC ` <X,Y>. F_mor(X,Y,f) \<in> HomD ` <F_obj(X), F_obj(Y)>) \<and>
+    (\<forall>X\<in>C. F_mor(X,X, idC ` X) = idD ` (F_obj(X))) \<and>
+    (\<forall>X\<in>C. \<forall>Y\<in>C. \<forall>Z\<in>C. \<forall>f \<in> HomC ` <X,Y>. \<forall>g \<in> HomC ` <Y,Z>.
+       F_mor(X,Z, compoC ` X ` Y ` Z ` <f, g>) =
+       compoD ` F_obj(X) ` F_obj(Y) ` F_obj(Z) ` <F_mor(X,Y,f), F_mor(Y,Z,g)>)"
+
+(* Natural transformation between covariant functors *)
+definition is_nat_trans :: "[i, i, i, i, (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), (i \<Rightarrow> i)] \<Rightarrow> o"
+  where "is_nat_trans(C, HomC, D, HomD, compoD, F_obj, F_mor, G_obj, G_mor, alpha) \<equiv>
+    (\<forall>X\<in>C. alpha(X) \<in> HomD ` <F_obj(X), G_obj(X)>) \<and>
+    (\<forall>X\<in>C. \<forall>Y\<in>C. \<forall>f \<in> HomC ` <X,Y>.
+       compoD ` F_obj(X) ` G_obj(X) ` G_obj(Y) ` <alpha(X), G_mor(X,Y,f)> =
+       compoD ` F_obj(X) ` F_obj(Y) ` G_obj(Y) ` <F_mor(X,Y,f), alpha(Y)>)"
+
+(* Categorical Adjunction via unit eta, counit epsilon, and triangle / zig-zag identities *)
+definition is_adjunction :: "[i, i, i, i, i, i, i, i, (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), (i \<Rightarrow> i), (i \<Rightarrow> i)] \<Rightarrow> o"
+  where "is_adjunction(C, HomC, compoC, idC, D, HomD, compoD, idD, F_obj, F_mor, G_obj, G_mor, eta, eps) \<equiv>
+    is_functor(C, HomC, compoC, idC, D, HomD, compoD, idD, F_obj, F_mor) \<and>
+    is_functor(D, HomD, compoD, idD, C, HomC, compoC, idC, G_obj, G_mor) \<and>
+    (\<forall>X\<in>C. eta(X) \<in> HomC ` <X, G_obj(F_obj(X))>) \<and>
+    (\<forall>Y\<in>D. eps(Y) \<in> HomD ` <F_obj(G_obj(Y)), Y>) \<and>
+    (\<forall>X\<in>C. compoD ` F_obj(X) ` F_obj(G_obj(F_obj(X))) ` F_obj(X) ` <F_mor(X, G_obj(F_obj(X)), eta(X)), eps(F_obj(X))> = idD ` (F_obj(X))) \<and>
+    (\<forall>Y\<in>D. compoC ` G_obj(Y) ` G_obj(F_obj(G_obj(Y))) ` G_obj(Y) ` <eta(G_obj(Y)), G_mor(F_obj(G_obj(Y)), Y, eps(Y))> = idC ` (G_obj(Y)))"
+
+(* Cone over a diagram functor D: J to C *)
+definition is_cone :: "[i, i, i, i, i, (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), i, (i \<Rightarrow> i)] \<Rightarrow> o"
+  where "is_cone(C, HomC, compoC, J, HomJ, D_obj, D_mor, W, psi) \<equiv>
+    W \<in> C \<and>
+    (\<forall>j\<in>J. psi(j) \<in> HomC ` <W, D_obj(j)>) \<and>
+    (\<forall>j\<in>J. \<forall>k\<in>J. \<forall>m \<in> HomJ ` <j,k>.
+       compoC ` W ` D_obj(j) ` D_obj(k) ` <psi(j), D_mor(j,k,m)> = psi(k))"
+
+(* Limit of a diagram functor D: universal cone *)
+definition is_limit :: "[i, i, i, i, i, (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), i, (i \<Rightarrow> i)] \<Rightarrow> o"
+  where "is_limit(C, HomC, compoC, J, HomJ, D_obj, D_mor, L, pi) \<equiv>
+    is_cone(C, HomC, compoC, J, HomJ, D_obj, D_mor, L, pi) \<and>
+    (\<forall>W\<in>C. \<forall>psi. is_cone(C, HomC, compoC, J, HomJ, D_obj, D_mor, W, psi) \<longrightarrow>
+       (\<exists>!u. u \<in> HomC ` <W, L> \<and> (\<forall>j\<in>J. compoC ` W ` L ` D_obj(j) ` <u, pi(j)> = psi(j))))"
+
+(* Cocone over a diagram functor D: J to C *)
+definition is_cocone :: "[i, i, i, i, i, (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), i, (i \<Rightarrow> i)] \<Rightarrow> o"
+  where "is_cocone(C, HomC, compoC, J, HomJ, D_obj, D_mor, W, iota) \<equiv>
+    W \<in> C \<and>
+    (\<forall>j\<in>J. iota(j) \<in> HomC ` <D_obj(j), W>) \<and>
+    (\<forall>j\<in>J. \<forall>k\<in>J. \<forall>m \<in> HomJ ` <j,k>.
+       compoC ` D_obj(j) ` D_obj(k) ` W ` <D_mor(j,k,m), iota(k)> = iota(j))"
+
+(* Colimit of a diagram functor D: universal cocone *)
+definition is_colimit :: "[i, i, i, i, i, (i \<Rightarrow> i), (i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i), i, (i \<Rightarrow> i)] \<Rightarrow> o"
+  where "is_colimit(C, HomC, compoC, J, HomJ, D_obj, D_mor, Colim, iota) \<equiv>
+    is_cocone(C, HomC, compoC, J, HomJ, D_obj, D_mor, Colim, iota) \<and>
+    (\<forall>W\<in>C. \<forall>psi. is_cocone(C, HomC, compoC, J, HomJ, D_obj, D_mor, W, psi) \<longrightarrow>
+       (\<exists>!u. u \<in> HomC ` <Colim, W> \<and> (\<forall>j\<in>J. compoC ` D_obj(j) ` Colim ` W ` <iota(j), u> = psi(j))))"
+
 end

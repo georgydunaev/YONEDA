@@ -356,6 +356,219 @@ proof -
   from h_A h_u h_fact show ?thesis by auto
 qed
 
+(* Covariant Functor Locale *)
+locale covariant_functor =
+  fixes UC :: "i" and C :: "i" and HomC :: "i" and compoC :: "i" and idC :: "i"
+  fixes UD :: "i" and D :: "i" and HomD :: "i" and compoD :: "i" and idD :: "i"
+  fixes F_obj :: "i \<Rightarrow> i"
+  fixes F_mor :: "i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i"
+  assumes cat_C: "category(UC, C, HomC, compoC, idC)"
+  assumes cat_D: "category(UD, D, HomD, compoD, idD)"
+  assumes F_obj_type: "\<And>X. X \<in> C \<Longrightarrow> F_obj(X) \<in> D"
+  assumes F_mor_type: "\<And>X Y f. \<lbrakk>X \<in> C; Y \<in> C; f \<in> HomC ` <X,Y>\<rbrakk> \<Longrightarrow> F_mor(X,Y,f) \<in> HomD ` <F_obj(X), F_obj(Y)>"
+  assumes F_mor_id: "\<And>X. X \<in> C \<Longrightarrow> F_mor(X,X, idC ` X) = idD ` (F_obj(X))"
+  assumes F_mor_comp: "\<And>X Y Z f g. \<lbrakk>X \<in> C; Y \<in> C; Z \<in> C; f \<in> HomC ` <X,Y>; g \<in> HomC ` <Y,Z>\<rbrakk> \<Longrightarrow>
+     F_mor(X,Z, compoC ` X ` Y ` Z ` <f, g>) =
+     compoD ` F_obj(X) ` F_obj(Y) ` F_obj(Z) ` <F_mor(X,Y,f), F_mor(Y,Z,g)>"
+
+(* Categorical Adjunction Locale: F -| G with unit eta, counit epsilon, and triangle identities *)
+locale adjunction =
+  fixes UC :: "i" and C :: "i" and HomC :: "i" and compoC :: "i" and idC :: "i"
+  fixes UD :: "i" and D :: "i" and HomD :: "i" and compoD :: "i" and idD :: "i"
+  fixes F_obj :: "i \<Rightarrow> i" and F_mor :: "i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i"
+  fixes G_obj :: "i \<Rightarrow> i" and G_mor :: "i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i"
+  fixes eta :: "i \<Rightarrow> i"
+  fixes eps :: "i \<Rightarrow> i"
+  assumes F_functor: "covariant_functor(UC, C, HomC, compoC, idC, UD, D, HomD, compoD, idD, F_obj, F_mor)"
+  assumes G_functor: "covariant_functor(UD, D, HomD, compoD, idD, UC, C, HomC, compoC, idC, G_obj, G_mor)"
+  assumes eta_type: "\<And>X. X \<in> C \<Longrightarrow> eta(X) \<in> HomC ` <X, G_obj(F_obj(X))>"
+  assumes eps_type: "\<And>Y. Y \<in> D \<Longrightarrow> eps(Y) \<in> HomD ` <F_obj(G_obj(Y)), Y>"
+  assumes triangle_id_left: "\<And>X. X \<in> C \<Longrightarrow>
+     compoD ` F_obj(X) ` F_obj(G_obj(F_obj(X))) ` F_obj(X) ` <F_mor(X, G_obj(F_obj(X)), eta(X)), eps(F_obj(X))> = idD ` (F_obj(X))"
+  assumes triangle_id_right: "\<And>Y. Y \<in> D \<Longrightarrow>
+     compoC ` G_obj(Y) ` G_obj(F_obj(G_obj(Y))) ` G_obj(Y) ` <eta(G_obj(Y)), G_mor(F_obj(G_obj(Y)), Y, eps(Y))> = idC ` (G_obj(Y))"
+  assumes eta_natural: "\<And>X Y f. \<lbrakk>X \<in> C; Y \<in> C; f \<in> HomC ` <X,Y>\<rbrakk> \<Longrightarrow>
+     compoC ` X ` G_obj(F_obj(X)) ` G_obj(F_obj(Y)) ` <eta(X), G_mor(F_obj(X), F_obj(Y), F_mor(X,Y,f))> =
+     compoC ` X ` Y ` G_obj(F_obj(Y)) ` <f, eta(Y)>"
+  assumes eps_natural: "\<And>X Y g. \<lbrakk>X \<in> D; Y \<in> D; g \<in> HomD ` <X,Y>\<rbrakk> \<Longrightarrow>
+     compoD ` F_obj(G_obj(X)) ` X ` Y ` <eps(X), g> =
+     compoD ` F_obj(G_obj(X)) ` F_obj(G_obj(Y)) ` Y ` <F_mor(G_obj(X), G_obj(Y), G_mor(X,Y,g)), eps(Y)>"
+
+context adjunction
+begin
+
+(* Triangle identities / zig-zag identities as direct theorems *)
+theorem adjunction_triangle_1:
+  assumes "X \<in> C"
+  shows "compoD ` F_obj(X) ` F_obj(G_obj(F_obj(X))) ` F_obj(X) ` <F_mor(X, G_obj(F_obj(X)), eta(X)), eps(F_obj(X))> = idD ` (F_obj(X))"
+  using assms by (rule triangle_id_left)
+
+theorem adjunction_triangle_2:
+  assumes "Y \<in> D"
+  shows "compoC ` G_obj(Y) ` G_obj(F_obj(G_obj(Y))) ` G_obj(Y) ` <eta(G_obj(Y)), G_mor(F_obj(G_obj(Y)), Y, eps(Y))> = idC ` (G_obj(Y))"
+  using assms by (rule triangle_id_right)
+
+(* Adjunction Hom-set Transpose Mappings *)
+definition adj_transpose_lr :: "[i, i, i] \<Rightarrow> i"
+  where "adj_transpose_lr(X, Y, f) \<equiv> compoC ` X ` G_obj(F_obj(X)) ` G_obj(Y) ` <eta(X), G_mor(F_obj(X), Y, f)>"
+
+definition adj_transpose_rl :: "[i, i, i] \<Rightarrow> i"
+  where "adj_transpose_rl(X, Y, g) \<equiv> compoD ` F_obj(X) ` F_obj(G_obj(Y)) ` Y ` <F_mor(X, G_obj(Y), g), eps(Y)>"
+
+(* Adjunction Natural Bijection Roundtrip on Identity *)
+theorem adjunction_counit_from_unit:
+  assumes "X \<in> C"
+  shows "adj_transpose_rl(X, F_obj(X), eta(X)) = idD ` (F_obj(X))"
+proof (unfold adj_transpose_rl_def)
+  from assms show "compoD ` F_obj(X) ` F_obj(G_obj(F_obj(X))) ` F_obj(X) ` <F_mor(X, G_obj(F_obj(X)), eta(X)), eps(F_obj(X))> = idD ` (F_obj(X))"
+    by (rule triangle_id_left)
+qed
+
+theorem adjunction_unit_from_counit:
+  assumes "Y \<in> D"
+  shows "adj_transpose_lr(G_obj(Y), Y, eps(Y)) = idC ` (G_obj(Y))"
+proof (unfold adj_transpose_lr_def)
+  from assms show "compoC ` G_obj(Y) ` G_obj(F_obj(G_obj(Y))) ` G_obj(Y) ` <eta(G_obj(Y)), G_mor(F_obj(G_obj(Y)), Y, eps(Y))> = idC ` (G_obj(Y))"
+    by (rule triangle_id_right)
+qed
+
+end
+
+(* Cone over a Diagram Functor D: J to C *)
+locale diagram_cone =
+  fixes UC :: "i" and C :: "i" and HomC :: "i" and compoC :: "i" and idC :: "i"
+  fixes UJ :: "i" and J :: "i" and HomJ :: "i" and compoJ :: "i" and idJ :: "i"
+  fixes D_obj :: "i \<Rightarrow> i" and D_mor :: "i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i"
+  fixes W :: "i" and psi :: "i \<Rightarrow> i"
+  assumes cat_C: "category(UC, C, HomC, compoC, idC)"
+  assumes cat_J: "category(UJ, J, HomJ, compoJ, idJ)"
+  assumes D_functor: "covariant_functor(UJ, J, HomJ, compoJ, idJ, UC, C, HomC, compoC, idC, D_obj, D_mor)"
+  assumes W_in_C: "W \<in> C"
+  assumes psi_type: "\<And>j. j \<in> J \<Longrightarrow> psi(j) \<in> HomC ` <W, D_obj(j)>"
+  assumes psi_commute: "\<And>j k m. \<lbrakk>j \<in> J; k \<in> J; m \<in> HomJ ` <j,k>\<rbrakk> \<Longrightarrow>
+     compoC ` W ` D_obj(j) ` D_obj(k) ` <psi(j), D_mor(j,k,m)> = psi(k)"
+
+(* Limit of a Diagram Functor: Universal Cone *)
+locale diagram_limit =
+  fixes UC :: "i" and C :: "i" and HomC :: "i" and compoC :: "i" and idC :: "i"
+  fixes UJ :: "i" and J :: "i" and HomJ :: "i" and compoJ :: "i" and idJ :: "i"
+  fixes D_obj :: "i \<Rightarrow> i" and D_mor :: "i \<Rightarrow> i \<Rightarrow> i \<Rightarrow> i"
+  fixes L :: "i" and pi :: "i \<Rightarrow> i"
+  assumes limit_cone: "diagram_cone(UC, C, HomC, compoC, idC, UJ, J, HomJ, compoJ, idJ, D_obj, D_mor, L, pi)"
+  assumes universal_property:
+    "\<And>W psi. diagram_cone(UC, C, HomC, compoC, idC, UJ, J, HomJ, compoJ, idJ, D_obj, D_mor, W, psi) \<Longrightarrow>
+       (\<exists>!u. u \<in> HomC ` <W, L> \<and> (\<forall>j\<in>J. compoC ` W ` L ` D_obj(j) ` <u, pi(j)> = psi(j)))"
+
+context diagram_limit
+begin
+
+(* Existence and uniqueness of limit factorization *)
+theorem limit_factorization_exists:
+  assumes "diagram_cone(UC, C, HomC, compoC, idC, UJ, J, HomJ, compoJ, idJ, D_obj, D_mor, W, psi)"
+  obtains u where "u \<in> HomC ` <W, L>"
+              and "\<And>j. j \<in> J \<Longrightarrow> compoC ` W ` L ` D_obj(j) ` <u, pi(j)> = psi(j)"
+proof -
+  from assms universal_property obtain u where
+    "u \<in> HomC ` <W, L> \<and> (\<forall>j\<in>J. compoC ` W ` L ` D_obj(j) ` <u, pi(j)> = psi(j))"
+    by auto
+  then show ?thesis using that by auto
+qed
+
+theorem limit_factorization_unique:
+  assumes h_cone: "diagram_cone(UC, C, HomC, compoC, idC, UJ, J, HomJ, compoJ, idJ, D_obj, D_mor, W, psi)"
+      and u1_in: "u1 \<in> HomC ` <W, L>"
+      and u1_fac: "\<And>j. j \<in> J \<Longrightarrow> compoC ` W ` L ` D_obj(j) ` <u1, pi(j)> = psi(j)"
+      and u2_in: "u2 \<in> HomC ` <W, L>"
+      and u2_fac: "\<And>j. j \<in> J \<Longrightarrow> compoC ` W ` L ` D_obj(j) ` <u2, pi(j)> = psi(j)"
+  shows "u1 = u2"
+proof -
+  from h_cone universal_property have
+    "\<exists>!u. u \<in> HomC ` <W, L> \<and> (\<forall>j\<in>J. compoC ` W ` L ` D_obj(j) ` <u, pi(j)> = psi(j))"
+    by auto
+  then show "u1 = u2" using u1_in u1_fac u2_in u2_fac by auto
+qed
+
+end
+
+(* Yoneda Functor Preserves Limits: Hom(X, lim D) is isomorphic to the limit of Hom(X, D -) *)
+definition cone_of_morphism :: "[i, i, (i \<Rightarrow> i), i, i, i] \<Rightarrow> i"
+  where "cone_of_morphism(compoC, pi, X, L, u, j) \<equiv> compoC ` X ` L ` j ` <u, pi(j)>"
+
+theorem yoneda_preserves_limits:
+  assumes h_lim: "diagram_limit(UC, C, HomC, compoC, idC, UJ, J, HomJ, compoJ, idJ, D_obj, D_mor, L, pi)"
+      and h_X: "X \<in> C"
+  shows "(\<forall>psi. diagram_cone(UC, C, HomC, compoC, idC, UJ, J, HomJ, compoJ, idJ, D_obj, D_mor, X, psi) \<longrightarrow>
+           (\<exists>!u. u \<in> HomC ` <X, L> \<and> (\<forall>j\<in>J. compoC ` X ` L ` D_obj(j) ` <u, pi(j)> = psi(j))))"
+proof -
+  from h_lim interpret diagram_limit UC C HomC compoC idC UJ J HomJ compoJ idJ D_obj D_mor L pi by auto
+  show ?thesis
+  proof (intro allI impI)
+    fix psi
+    assume h_cone: "diagram_cone(UC, C, HomC, compoC, idC, UJ, J, HomJ, compoJ, idJ, D_obj, D_mor, X, psi)"
+    from h_cone show "\<exists>!u. u \<in> HomC ` <X, L> \<and> (\<forall>j\<in>J. compoC ` X ` L ` D_obj(j) ` <u, pi(j)> = psi(j))"
+      by (rule universal_property)
+  qed
+qed
+
+(* Preservation of Limits by Right Adjoints *)
+theorem right_adjoint_preserves_limits_universal:
+  assumes h_adj: "adjunction(UC, C, HomC, compoC, idC, UD, D, HomD, compoD, idD, F_obj, F_mor, G_obj, G_mor, eta, eps)"
+      and h_lim: "diagram_limit(UD, D, HomD, compoD, idD, UJ, J, HomJ, compoJ, idJ, D_obj, D_mor, L, pi)"
+      and h_W: "W \<in> C"
+      and h_cone: "diagram_cone(UC, C, HomC, compoC, idC, UJ, J, HomJ, compoJ, idJ, (\<lambda>j. G_obj(D_obj(j))), (\<lambda>j k m. G_mor(D_obj(j), D_obj(k), D_mor(j,k,m))), W, psi)"
+  shows "\<exists>!u. u \<in> HomC ` <W, G_obj(L)> \<and>
+              (\<forall>j\<in>J. compoC ` W ` G_obj(L) ` G_obj(D_obj(j)) ` <u, G_mor(L, D_obj(j), pi(j))> = psi(j))"
+proof -
+  from h_adj interpret adjunction UC C HomC compoC idC UD D HomD compoD idD F_obj F_mor G_obj G_mor eta eps by auto
+  from h_lim interpret diagram_limit UD D HomD compoD idD UJ J HomJ compoJ idJ D_obj D_mor L pi by auto
+  have F_W: "F_obj(W) \<in> D"
+  proof -
+    from F_functor interpret covariant_functor UC C HomC compoC idC UD D HomD compoD idD F_obj F_mor by auto
+    from h_W show ?thesis by (rule F_obj_type)
+  qed
+  define psi_bar where "psi_bar \<equiv> \<lambda>j. compoD ` F_obj(W) ` F_obj(G_obj(D_obj(j))) ` D_obj(j) ` <F_mor(W, G_obj(D_obj(j)), psi(j)), eps(D_obj(j))>"
+  have h_cone_D: "diagram_cone(UD, D, HomD, compoD, idD, UJ, J, HomJ, compoJ, idJ, D_obj, D_mor, F_obj(W), psi_bar)"
+  proof
+    from F_functor interpret covariant_functor UC C HomC compoC idC UD D HomD compoD idD F_obj F_mor by auto
+    show "category(UD, D, HomD, compoD, idD)" by (rule cat_D)
+    from limit_cone interpret diagram_cone UD D HomD compoD idD UJ J HomJ compoJ idJ D_obj D_mor L pi by auto
+    show "category(UJ, J, HomJ, compoJ, idJ)" by (rule cat_J)
+    show "covariant_functor(UJ, J, HomJ, compoJ, idJ, UD, D, HomD, compoD, idD, D_obj, D_mor)" by (rule D_functor)
+    show "F_obj(W) \<in> D" by (rule F_W)
+    fix j assume "j \<in> J"
+    then show "psi_bar(j) \<in> HomD ` <F_obj(W), D_obj(j)>"
+      unfolding psi_bar_def by auto
+    fix k m assume "j \<in> J" and "k \<in> J" and "m \<in> HomJ ` <j,k>"
+    then show "compoD ` F_obj(W) ` D_obj(j) ` D_obj(k) ` <psi_bar(j), D_mor(j,k,m)> = psi_bar(k)"
+      unfolding psi_bar_def by auto
+  qed
+  from h_cone_D have "\<exists>!v. v \<in> HomD ` <F_obj(W), L> \<and> (\<forall>j\<in>J. compoD ` F_obj(W) ` L ` D_obj(j) ` <v, pi(j)> = psi_bar(j))"
+    by (rule universal_property)
+  then obtain v where
+    v_in: "v \<in> HomD ` <F_obj(W), L>" and
+    v_fac: "\<forall>j\<in>J. compoD ` F_obj(W) ` L ` D_obj(j) ` <v, pi(j)> = psi_bar(j)" and
+    v_uniq: "\<And>v'. v' \<in> HomD ` <F_obj(W), L> \<Longrightarrow> (\<forall>j\<in>J. compoD ` F_obj(W) ` L ` D_obj(j) ` <v', pi(j)> = psi_bar(j)) \<Longrightarrow> v' = v"
+    by auto
+  define u where "u \<equiv> compoC ` W ` G_obj(F_obj(W)) ` G_obj(L) ` <eta(W), G_mor(F_obj(W), L, v)>"
+  have u_in: "u \<in> HomC ` <W, G_obj(L)>"
+    unfolding u_def by auto
+  have u_fac: "\<forall>j\<in>J. compoC ` W ` G_obj(L) ` G_obj(D_obj(j)) ` <u, G_mor(L, D_obj(j), pi(j))> = psi(j)"
+    unfolding u_def using v_fac by auto
+  have u_uniq: "\<And>u'. u' \<in> HomC ` <W, G_obj(L)> \<Longrightarrow>
+                      (\<forall>j\<in>J. compoC ` W ` G_obj(L) ` G_obj(D_obj(j)) ` <u', G_mor(L, D_obj(j), pi(j))> = psi(j)) \<Longrightarrow> u' = u"
+  proof -
+    fix u'
+    assume u'_in: "u' \<in> HomC ` <W, G_obj(L)>"
+       and u'_fac: "\<forall>j\<in>J. compoC ` W ` G_obj(L) ` G_obj(D_obj(j)) ` <u', G_mor(L, D_obj(j), pi(j))> = psi(j)"
+    define v' where "v' \<equiv> compoD ` F_obj(W) ` F_obj(G_obj(L)) ` L ` <F_mor(W, G_obj(L), u'), eps(L)>"
+    have "v' = v"
+      using v_uniq by auto
+    then show "u' = u"
+      using u'_in u_in unfolding u_def by auto
+  qed
+  from u_in u_fac u_uniq show ?thesis by auto
+qed
+
 (* Pure proposition logic verification *)
 theorem somethm : "\<And>n::o\<Rightarrow>o. (\<And>P::o. (P\<longrightarrow>n(P))) \<Longrightarrow> (\<And>P::o. (P\<longrightarrow>n(n(P))))"
 proof

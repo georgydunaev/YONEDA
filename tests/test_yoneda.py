@@ -118,6 +118,49 @@ class TestYoneda(unittest.TestCase):
         self.assertIn("has_universal_element", mylib_content)
         self.assertIn("is_represented_by", mylib_content)
 
+    def test_adjunctions_and_limits_formalization(self):
+        yoneda_path = os.path.join(ROOT, "Yoneda.thy")
+        mylib_path = os.path.join(ROOT, "mylibrary.thy")
+
+        with open(yoneda_path, "r", encoding="utf-8") as f:
+            yoneda_content = f.read()
+        with open(mylib_path, "r", encoding="utf-8") as f:
+            mylib_content = f.read()
+
+        # Definitions in mylibrary
+        for item in (
+            "is_functor",
+            "is_nat_trans",
+            "is_adjunction",
+            "is_cone",
+            "is_limit",
+            "is_cocone",
+            "is_colimit",
+        ):
+            self.assertIn(item, mylib_content, f"Missing {item} in mylibrary.thy")
+
+        # Locales in Yoneda
+        for loc in (
+            "locale covariant_functor",
+            "locale adjunction",
+            "locale diagram_cone",
+            "locale diagram_limit",
+        ):
+            self.assertIn(loc, yoneda_content, f"Missing {loc} in Yoneda.thy")
+
+        # Theorems in Yoneda
+        for thm in (
+            "adjunction_triangle_1",
+            "adjunction_triangle_2",
+            "adjunction_counit_from_unit",
+            "adjunction_unit_from_counit",
+            "limit_factorization_exists",
+            "limit_factorization_unique",
+            "yoneda_preserves_limits",
+            "right_adjoint_preserves_limits_universal",
+        ):
+            self.assertIn(thm, yoneda_content, f"Missing {thm} in Yoneda.thy")
+
     def test_finite_category_yoneda_bijection_and_embedding(self):
         # Explicit computational model of a small category:
         # Poset category 0 <= 1 <= 2

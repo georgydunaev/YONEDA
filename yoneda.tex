@@ -134,14 +134,18 @@ $$\Pi R\eqdef\{ f\in \Pow\Sigma R: \Fun(f)\land \dom(R)\subseteq \dom(f)\}$$
 
 \subsection{Extensionality}
 \begin{theorem}
-Assume $\forall~x\in X. g_1(x)=g_2(x)$, $\Rel(g_1)$, $\Fun(g_1)$,$\Fun(g_2)$,\\ $\dom(g_1)\subseteq\dom(g_2)$ and show that $g_1\subseteq g_2$.\\
+Assume $\forall~x\in X. g_1(x)=g_2(x)$, $\Rel(g_1)$, $\Fun(g_1)$, $\Fun(g_2)$, $\dom(g_1)\subseteq\dom(g_2)\subseteq X$ and show that $g_1\subseteq g_2$.\\
 \myprf\\
-$p\in g_1$.
+Let $p\in g_1$.
 $\stackrel{\Rel(g_1)}{\Longrightarrow}$
-There exists $a$, $b$ such that $p=\langle a, b\rangle$.
+There exist $a$, $b$ such that $p=\langle a, b\rangle$.
 $\stackrel{p\in g_1}{\Longrightarrow}$ $\langle a, b\rangle\in g_1$.
 \\
-... to be continued ...
+Hence $a\in\dom(g_1)$ and, by uniqueness of function values for $\Fun(g_1)$, $b = g_1(a)$.
+\\
+Since $\dom(g_1)\subseteq\dom(g_2)\subseteq X$, we have $a\in\dom(g_2)$ and $a\in X$, so $g_1(a)=g_2(a)$ by hypothesis.
+\\
+Because $a\in\dom(g_2)$ and $\Fun(g_2)$, $\langle a, g_2(a)\rangle\in g_2$. Substituting $b = g_1(a) = g_2(a)$ yields $p = \langle a, b\rangle \in g_2$. Therefore $g_1\subseteq g_2$.
 \\\myqed 
 \end{theorem}
 \subsection{Misc}
